@@ -1,0 +1,125 @@
+,index,Concepto
+0,Fecha,11/06/2023
+1,DNI,33868126.0
+2,Nombre y Apellido,gino cingolani trucco
+3,Edad,34.0
+4,Sexo,Masculino
+5,Altura (cm),1.74
+6,Historial Deportivo,atletismo 4 años
+9,Seguís plan nutricional?,Sí
+10,Qué tan cansado estas ahora de 1 a 10?,2.0
+11,Cuántas veces por semana entrenas físico?,3.0
+12,Tenés entrenador o entrenas solo?,Con entrenador
+13,Brazo y Pierna dominante [dominante],"Brazo Derecho, Pierna Izquierda"
+21,Test Neer analiza si existe Atrapamiento de la capsula Subacromial.  Mano en Escapula. Cruzar por delante el brazo. [Der],4 libre
+22,Test Patte Infraespinoso. Evalúa el estado del tendon del musculo Infraespinoso.  Brazo con codo flexionado 90° Abducir a 90° Rotacion externa con resistencia. [Der],4 libre
+23,Test Jobe de la Lata Vacia. Valorar el estado del musculo Supraespinoso  Hombros abducidos 90° grados en rotacion interna con los antebrazos pronados. Pedir que resista la posicion [Der],4 libre
+26,Longitud de bazos (cm),1.7
+27,Alguna enfermedad a mencionar ,no
+28,Tomas medicacion? ,no
+49,"maximo dolor percibido escala de Dundee, en 1968    [2 moderado  ]",Marcar Opcion
+52,"Test Gerber Valora el estado del tendon del musculo SUBESCAPULAR  Mano en escapula. Brazo por detras de la espalda, pedir que separa el brazo del cuerpo. [Izq]",1 limitacion
+53,"Test Gerber Valora el estado del tendon del musculo SUBESCAPULAR  Mano en escapula. Brazo por detras de la espalda, pedir que separa el brazo del cuerpo. [Der]",4 libre
+54,Test Neer analiza si existe Atrapamiento de la capsula Subacromial.  Mano en Escapula. Cruzar por delante el brazo. [Izq],1 limitado
+55,Test Patte Infraespinoso. Evalúa el estado del tendon del musculo Infraespinoso.  Brazo con codo flexionado 90° Abducir a 90° Rotacion externa con resistencia. [Izq],4 libre
+56,Test Jobe de la Lata Vacia. Valorar el estado del musculo Supraespinoso  Hombros abducidos 90° grados en rotacion interna con los antebrazos pronados. Pedir que resista la posicion [Izq],1 limitacion
+57,Test de Finkelstein  Valorar el estado de los tendones del abductor largo y  extensor corto de los dedos de la mano. esconder dedo gordo dentro del puño y elongar en aduccion.  [Der],4 libre
+58,Test de Finkelstein  Valorar el estado de los tendones del abductor largo y  extensor corto de los dedos de la mano. esconder dedo gordo dentro del puño y elongar en aduccion.  [Izq],4 libre
+59,"Test de Hawkins Valorar si existe atrapamiento de las estructuras subacromiales. Tendon del Supraespinoso  Bursa Subdeltoidea y tendon de la porción larga del biceps. Brazo en flexion de 90° en rotacion interna. Soporte en codo, empujar a rotacion interna. [Der]",4 libre
+60,"Test de Hawkins Valorar si existe atrapamiento de las estructuras subacromiales. Tendon del Supraespinoso  Bursa Subdeltoidea y tendon de la porción larga del biceps. Brazo en flexion de 90° en rotacion interna. Soporte en codo, empujar a rotacion interna. [Izq]",1 limitacion
+61,"Test de Cozen Epicondilitis Lateral.  Aislar antebrazo. Pedir extension de muñeca, luego aplicar resistencia. [Der]",4 libre
+62,"Test de Cozen Epicondilitis Lateral.  Aislar antebrazo. Pedir extension de muñeca, luego aplicar resistencia. [Izq]",4 libre
+63,Observacion de la flexion y extension de columna de pie [Flexion],"acortamiento isquiotibiales, 1 puño del suelo"
+65,Evaluación de la Flexion Plantar  (normal 30° - 40° verificar 5° asimetria)  ,der: 35° izq: 38°
+67,Evaluación de la flexion de rodilla (normal Pelvis tocar los talones),normal
+68,Evaluación de la flexion de Cadera  (140° aprox - Costillas tocan muslos)  ,normal
+69,evaluación de la flexion espinal  decubito supino (curva uniforme a nivel toraco-lumbar)  [Lat Flexion expinal ],Dorsal Plano
+70,Evaluación de la extension espinal decubito supino (normal brazos perpendiculares al suelo y la espina iliaca en contacto con el suelo o a 1 puño de distancia)   [Extension espinal],1 puño
+71,"Test de thomas modificado   
+(Determinar la movilidad general de la musculatura flexora de la cadera) MARCAR POSITIVO [Iliaco ]",negativo
+72,"Test de thomas modificado   
+(Determinar la movilidad general de la musculatura flexora de la cadera) MARCAR POSITIVO [Recto anterior]",Derecha
+73,"Test de thomas modificado   
+(Determinar la movilidad general de la musculatura flexora de la cadera) MARCAR POSITIVO [Tensor fascia lata ]",negativo
+74,Evaluacion de la rotacion interna de cadera en Prono. (Movilidad de la rotacion interna del femur sobre la cadera sin carga)  Normal 36°,34°
+75,Evaluacion de la rotacion interna de cadera en supino. (Movilidad de la rotacion interna del femur sobre la cadera sin carga)  Normal 36°,34°
+76,Evaluacion de la rotacion externa de cadera en Prono. (Movilidad de la rotacion interna del femur sobre la cadera sin carga)  Normal 40°,37°
+77,evaluacion de la rotacion externa de cadera en supino. (movilidad de la rotacion externa del femur sobre la cadera sin carga)  normal 38°,36°
+78,"evaluacion de aductores. (4 apoyos con una pierna flexionada y la otra estirada, ir hacia atras) Disfuncional si al pasar los 90° de flexion dobla la region dorsolumbar   [der]",positivo
+79,"evaluacion de aductores. (4 apoyos con una pierna flexionada y la otra estirada, ir hacia atras) Disfuncional si al pasar los 90° de flexion dobla la region dorsolumbar   [izq]",negativo
+80,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Hiper activacion del recto abdominal],Negativo
+81,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Insuficiente activacion de la pared abdominal baja],Negativo
+82,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Desplazamiento craneal del ombligo],Negativo
+83,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Posicion inspiratoria del pecho],Negativo
+84,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Hiperextension de la zona toracolumbar],Negativo
+85,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Diastasis abdominal],Negativo
+86,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [Hiperextension cervical],Negativo
+87,Evaluacion de la Respiracion (Posicion Supino ) Observar y palpar el patron respiratorio. [flexores del cuello excitados ],Negativo
+88,"Evaluacion de la Respiracion (Posicion Sentado ) Observar y palpar el patron respiratorio. [Ausencia, debilidad o asimetria en expansion posterolateral de la pared abdominal]",Negativo
+89,Evaluacion de la Respiracion (Posicion Sentado ) Observar y palpar el patron respiratorio. [Insuficiencia en la expansion de los espacios intercostales],Negativo
+90,Evaluacion de la Respiracion (Posicion Sentado ) Observar y palpar el patron respiratorio. [Movimientos craneales del pecho ],Negativo
+91,Evaluacion de la Respiracion (Posicion Sentado ) Observar y palpar el patron respiratorio. [Elevacion de hombros o escapulas],Negativo
+92,Evaluacion de la Respiracion (Posicion Sentado ) Observar y palpar el patron respiratorio. [Movimiento del tronco],Negativo
+93,Evaluacion del empuje de la cadera (Posicion decubito Supino)  [Ambos pies],Correcto
+94,Evaluacion del empuje de la cadera (Posicion decubito Supino)  [Der],Menor activacion
+95,Evaluacion del empuje de la cadera (Posicion decubito Supino)  [Izq],Correcto
+96,Descenso de la pelvis en cuadripedia  (Columna neutra al flexionar al maximo las cadera)   [flexion Lumbar antes de los 120°],Positivo
+97,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Der colapso plantar]",Positivo
+98,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Izq Colapso plantar]",Negativo
+99,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Der Rodilla valgo]",Positivo
+100,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Izq Rodilla valgo]",Negativo
+101,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Der Rotacion externa tibia]",Positivo
+102,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [izq Rotacion externa tibia]",Negativo
+103,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Der Alineacion tibial]",Positivo
+104,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Izq Alineacion tibial]",Negativo
+106,Evaluación de la Dorsiflexion del tobillo   (donde se siente)  [Der tendon aquiles],Positivo
+108,Evaluación de la Dorsiflexion del tobillo   (donde se siente)  [Der Muscular soleo],Positivo
+110,"dominadas (gesto-cantidad/peso-2rm)
+",2
+111,"sentadillas (gesto-cantidad/peso o 2rm)
+",7/30kg
+112,"peso muerto con relacion al peso (gesto-cantidad/peso-2rm) 
+",3/50kg
+113,Identificacion de la rotacion externa del humero  (Evidenciar si el humero esta limitado en su rango articular)  Sentado. Optimo 180°  [Der EXTERNO],4 libre
+114,Identificacion de la rotacion externa del humero  (Evidenciar si el humero esta limitado en su rango articular)  Sentado. Optimo 180°  [Izq EXTERNO ],1 limitado
+115,push horizontal (gesto-cantidad/peso-2rm)  ,18
+116,push vertical (gesto-cantidad/peso-2rm),10*25kg
+118,Evaluación de la Dorsiflexion del tobillo   (normal 38° + - 5.2°)  ,der: 36° izq: 39°
+119,FMS isquiotibiales. (medir en grados la flexion de la pierna) Disfuncional si no llega a elevar hasta los 90° ,85° ambas
+120,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Der cadera caida]",Negativo
+121,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Izq cadera caida]",Negativo
+122,"evaluación de la rotacion espinal  (en cuadripedia con el codo apoyado en el centro, mano al hombro apuesto realizar una rotacion)    [Der]",1 limitado
+123,"evaluación de la rotacion espinal  (en cuadripedia con el codo apoyado en el centro, mano al hombro apuesto realizar una rotacion)    [Izq]",2 libre
+124,evaluación de la flexion espinal  decubito supino (curva uniforme a nivel toraco-lumbar)  [Post Flexion Espinal ],Dorsal Plano
+126,"Plancha Codos (postura-cantidad)
+",3*1´
+127,"el barco (postura-cantidad)  se evalua la estabilidad respiratoria en postura de carga.
+","3*20"""
+128,FMS Evaluacion en Cuadripedia (quitar apoyo) Observar la extension y rotacion de columna.  [der ],3 estable
+129,FMS Evaluacion en Cuadripedia (quitar apoyo) Observar la extension y rotacion de columna.  [izq],2 compensa
+130,Evaluacion e identificacion de errores de la Sentadilla como patron de Movimiento [Ant Pies Giran hacia afuera],Der
+131,Evaluacion e identificacion de errores de la Sentadilla como patron de Movimiento [Ant Pies Aplanamiento ],Der
+132,Evaluacion e identificacion de errores de la Sentadilla como patron de Movimiento [Ant Rodillas Valgo],Der
+136,Evaluacion e identificacion de errores de la Sentadilla como patron de Movimiento [Poste Pies Elevacion de talon],Der
+137,Evaluacion e identificacion de errores de la Sentadilla como patron de Movimiento [Poste Pies Aplanamiento],Der
+139,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Hiperlordosis]",Negativo
+140,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Hipersifosis]",Negativo
+141,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Anteversion pelvica]",Negativo
+142,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [retroversion pelvica]",Negativo
+143,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Pelvis Neutra]",Negativo
+144,"remo (gesto-cantidad/peso-2rm)
+",3*10/10kg
+145,"Evaluacion del balance del cuerpo y el equilibrio (Observar plano sagital, lateral)  [Antepulsion de cabeza]",Negativo
+150,palpar musculatura en busqueda de  hipertono. [izq pect menor],positivo
+152,palpar musculatura en busqueda de  hipertono. [izq subclavio],positivo
+154,palpar musculatura en busqueda de  hipertono. [izq trapecio],positivo
+155,palpar musculatura en busqueda de  hipertono. [izq supraespinoso],positivo
+167,bruxismo? ,no
+172,Test Apley  Maniobra para explorar la movilidad del hombro y la integridad del manguito rotador [Der EXTERNO],4 libre
+173,Test Apley  Maniobra para explorar la movilidad del hombro y la integridad del manguito rotador [Izq EXTERNO ],1 limitado
+174,Test Apley  Maniobra para explorar la movilidad del hombro y la integridad del manguito rotador [Der INTERNO ],1 limitado
+175,Test Apley  Maniobra para explorar la movilidad del hombro y la integridad del manguito rotador [Izq INTERNO ],4 libre
+176,Detalle de lesión,No tiene lesiones 
+177,una semana tipica (solo horarios fijos),lunes a viernes de 10 a 18
+185,medio de transporte (desarrollar),"bici, auto, moto"
+186,Años escalando,0.0
