@@ -1,4 +1,6 @@
 import plotly.graph_objs as go
+import logging
+
 class Global_plots:
     """Plots all plots to compare athelte vs population"""
 
@@ -38,6 +40,8 @@ class Global_plots:
         fig = go.Figure(data=[trace_median,trace_inf_limit,trace_sup_limit], layout=layout)
         # Display the scatter plot
         fig.show()
+        logging.info("MVC population plot has been plotted")
+
 
     def cfd_global_plotter(self):
         #Valores de x a plotear
@@ -64,3 +68,4 @@ class Global_plots:
         fig = go.Figure(data=[trace], layout=layout)
         # Display the scatter plot
         fig.show()
+        logging.info("CFD population plot has been plotted")

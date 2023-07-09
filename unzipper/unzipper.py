@@ -2,7 +2,8 @@ import os
 import zipfile
 import shutil
 import re
-import glob
+import logging
+logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class Unzipper:
     """unzips all .zips that have just been downloaded"""
@@ -17,7 +18,9 @@ class Unzipper:
             match = re.search(r"(\d{1,2}_\d{1,2}_\d{4})", file_name)
             if match:
                  fecha = match.group(1)
-            else: print("No se encontró la fecha.")
+            else: 
+                 print("No se encontró la fecha")
+                 logging.error("Could not find the date")                 
             date, month, year = fecha.split("_")
             date = f"{date.zfill(2)}_{month.zfill(2)}_{year}"
             exercise=re.search(r"&(.*)\.zip", file_name).group(1)
@@ -37,6 +40,8 @@ class Unzipper:
                     if not os.path.exists(full_file_dir):
                         os.makedirs(full_file_dir)
                     shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
+                    logging.info("Found and placed correctly RFD")   
+            else:logging.info("No RFD")
             if "balanza" in file_name:
                     date=file_name[32:42]
                     exercise="balanza"
@@ -44,3 +49,7 @@ class Unzipper:
                     if not os.path.exists(full_file_dir):
                         os.makedirs(full_file_dir)
                     shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
+                    logging.info("Found and placed correctly Balance")   
+            else:
+                 print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
+                 logging.error("No Balance")

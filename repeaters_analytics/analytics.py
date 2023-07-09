@@ -9,6 +9,8 @@ import os
 import re
 import glob
 from datetime import datetime, timedelta
+import logging
+logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class Balance():
     def __init__(self,fecha1,fecha2,dni):
@@ -36,6 +38,7 @@ class Balance():
         #Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climbers.
         df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
         self.climbers_weight = round(df2["weight"].mean(),2)
+        logging.info("Peso de escalador calculado")
         return self.climbers_weight
 
 class Rfd():
@@ -64,7 +67,9 @@ class Rfd():
         #- climbers_rfd (float): The Rfd value of climbers.
         #Extracts the Rfd value from the loaded Rfd DataFrame and returns it as the Rfd value of climbers.
         self.climbers_rfd=round(self.rfd["rfd2080"].iloc[0],2)
+        logging.info("RFD calculado")
         return self.climbers_rfd
+    
     def plot_rfd(self):
         # Calculate the thresholds
         twenty_percent = 0.2 * self.rfd_df['weight'].max()
@@ -198,7 +203,9 @@ class Calc_from_repeaters():
             fig.add_trace(plot.data[0], row=row, col=col)
             try:
                 fig.add_trace(plot.data[1], row=row, col=col)
-            except:print(f"faltan los datos de un lado de {title_text}")
+            except:
+                logging.error(f"Missing values for one side of {title_text}]")
+                print(f"faltan los datos de un lado de {title_text}")
             # Find the maximum value in the trace data
             data = plot['data']
             max_y_value = max(np.max(trace.y) for trace in data if 'y' in trace)
