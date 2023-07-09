@@ -1,0 +1,2 @@
+# climbers_tindeq_asessment
+This repository is being created in order to generate a comprehensive diagnosis of the physical situation of a climber. It uses a data-based approach where part of the data is obtained through a Tindeq Progressor. The data must be uploaded to google drive and complete a particular google form to finally have a report that covers the mobility, power, maximum strength and critical strength of the athlete. For more information, contact @egc.leomirri on instagram
