@@ -1,0 +1,4 @@
+/downloader/credentials.json
+/downloader/token.json
+__pycache__
+logs.log
