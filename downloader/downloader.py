@@ -9,7 +9,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
+import logging
+logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class DriveDownloader:
     """Downloads all files containing the keyword "repeaters" in their name from Google Drive"""
@@ -46,15 +47,16 @@ class DriveDownloader:
             items = results.get('files', [])
 
             if not items:
-                print('No files found.')
+                print('No se encontraron archivos con este DNI y fechas en drive')
+                logging.error("No files with this DNI and dates were found on drive")
                 return
 
-            print('Files:')
+            logging.info("Descargando archivos")
             for item in items:
-                print(u'{0} ({1})'.format(item['name'], item['id']))
+                logging.info(u'{0} ({1})'.format(item['name'], item['id']))
                 self._download_file(service, item['id'], item['name'],dni=dni)
         except HttpError as error:
-            print(f'An error occurred: {error}')
+            logging.warning(f'An error occurred -- Do you have a folder named after the DNI you are searching for?? --:\n {error}')
         try:
             # Downloads the form
             file_id="12J7pd6_JoM48eSmqEi3WzmtMAMWaItS6OmFfiYtcye0"
@@ -62,6 +64,7 @@ class DriveDownloader:
             self._download_form(service, file_id, file_name)
         except HttpError as error:
             print(f'An error occurred: {error}')
+            logging.error(f'An error occurred: {error}')
 
     def _get_credentials(self):
         """Gets valid user credentials from storage."""
@@ -93,7 +96,7 @@ class DriveDownloader:
     
         while done is False:
             status, done = downloader.next_chunk()
-            print(f'Downloading {file_name}: {int(status.progress() * 100)}.')
+            logging.info(f'Downloading {file_name}: {int(status.progress() * 100)}.')
         fh.seek(0)
         dni_int=dni.replace("'", "")
         directory = f"{os.getcwd()}/{dni_int}"
@@ -113,7 +116,7 @@ class DriveDownloader:
 
         while done is False:
             status, done = downloader.next_chunk()
-            print(f'Downloading {file_name}: {int(status.progress() * 100)}%')
+            logging.info(f'Downloading {file_name}: {int(status.progress() * 100)}%')
         
         fh.seek(0)
         directory = os.getcwd()
@@ -122,4 +125,4 @@ class DriveDownloader:
         with open(file_path, 'wb') as f:
             f.write(fh.read())
 
-        print(f"File '{file_name}' has been downloaded successfully.")
+        logging.info(f"File '{file_name}' has been downloaded successfully.")
