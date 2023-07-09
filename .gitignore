@@ -1,5 +1,5 @@
-*credentials.json
-*token.json
+/downloader/credentials.json
+/downloader/token.json
 
 logs.log
 
