@@ -32,16 +32,20 @@ class Unzipper:
 
     def move_csvs(self):
         #For rfd and balanz
+        if not any("rfd" in path for path in os.listdir(self.dir_path)):
+            logging.error("No RFD")
+        if not any("balanza" in path for path in os.listdir(self.dir_path)):
+            logging.error("No Balance")
+            print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
         for file_name in (f for f in os.listdir(self.dir_path) if not f.startswith('.')):
-            if "rfd" in file_name:#
-                    date=file_name[18:28]
-                    exercise="rfd"
-                    full_file_dir = os.path.join(self.dir_path,date,exercise)
-                    if not os.path.exists(full_file_dir):
-                        os.makedirs(full_file_dir)
-                    shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
-                    logging.info("Found and placed correctly RFD")   
-            else:logging.info("No RFD")
+            if "rfd" in file_name:
+                date=file_name[18:28]
+                exercise="rfd"
+                full_file_dir = os.path.join(self.dir_path,date,exercise)
+                if not os.path.exists(full_file_dir):
+                    os.makedirs(full_file_dir)
+                shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
+                logging.info("Found and placed correctly RFD")
             if "balanza" in file_name:
                     date=file_name[32:42]
                     exercise="balanza"
@@ -49,7 +53,4 @@ class Unzipper:
                     if not os.path.exists(full_file_dir):
                         os.makedirs(full_file_dir)
                     shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
-                    logging.info("Found and placed correctly Balance")   
-            else:
-                 print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
-                 logging.error("No Balance")
+                    logging.info("Found and placed correctly Balance")
