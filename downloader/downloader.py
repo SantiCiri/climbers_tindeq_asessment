@@ -30,7 +30,10 @@ class DriveDownloader:
         fecha1=str(df.loc[df['concepto'] == 'fecha1', 'valor'].item())
         fecha2=str(df.loc[df['concepto'] == 'fecha2', 'valor'].item())
         conclusion=str(df.loc[df['concepto'] == 'Conclusion Final', 'valor'].item())
-        return dni, fecha1, fecha2, conclusion
+        methodology=str(df.loc[df['concepto'] == 'Metodologia', 'valor'].item())
+        objective=str(df.loc[df['concepto'] == 'Objetivo', 'valor'].item())
+        intro=str(df.loc[df['concepto'] == 'Introduccion', 'valor'].item())
+        return dni, fecha1, fecha2, intro,methodology,objective,conclusion
 
     def download_files(self,dni):
         try:

@@ -212,6 +212,8 @@ class Calc_from_repeaters():
             max_x_value = max(np.max(trace.x) for trace in data if 'x' in trace)
             # Update the legend position to the top
             fig.update_layout(legend=dict(orientation='h', yanchor='top', y=1.1))
+            # Make plots taller
+            fig.update_layout(height=900)
 
             # Add title annotation to the subplot
             fig.add_annotation(
@@ -223,7 +225,7 @@ class Calc_from_repeaters():
                 showarrow=False,
                 row=row, col=col
             )
-        fig.show()
+        return fig
 
 class Cfd():
     def __init__(self,fecha1,fecha2,dni,climbers_weight):
