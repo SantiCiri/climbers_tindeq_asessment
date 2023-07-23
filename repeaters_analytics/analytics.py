@@ -294,4 +294,4 @@ class Cfd():
         fig.add_trace(go.Scatter(x=[0, 7], y=[self.max_strength,self.max_strength], mode='lines', line=dict(color='red'),name="Fuerza Maxima"))
         fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.critical_force*100)}%',
                            xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)')
-        fig.show()
+        return fig
