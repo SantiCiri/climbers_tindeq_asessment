@@ -4,6 +4,7 @@ import weasyprint
 import pdfkit
 import plotly.graph_objs as go
 import plotly.io as pio
+import webbrowser
 from selenium import webdriver
 from datetime import datetime, timedelta
 import os
@@ -32,8 +33,13 @@ class Reporter:
         return self.full_name
     
     @staticmethod
-    def create_html(dni,titulo, secciones, objetivo, resultados, conclusiones, graficos):
+    def create_html(dni,titulo, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
         dni=dni.replace("'", "")
+        #Beautifies plots
+        graficos_str = ''
+        for plot in graficos:
+            plot = f'<div style="margin: -150px; padding: 5px; width: 100%;">{plot}</div>'
+            graficos_str += plot
         # Plantilla HTML
         html_template = f"""
         <!DOCTYPE html>
@@ -42,15 +48,15 @@ class Reporter:
             <title>{titulo}a</title>
         </head>
         <body>
-            <h1>{titulo}</h1>
+            <h1 style="text-align: center;">{titulo}</h1>
             <h2>{secciones[0]}</h2>
-            <p>Contenido de la introducción...</p>
+            <p>{introduccion}</p>
             
             <h2>{secciones[1]}</h2>
             <p>{objetivo}</p>
             
             <h2>{secciones[2]}</h2>
-            <p>Contenido de la metodología...</p>
+            <p>{metodologia}</p>
             
             <h2>{secciones[3]}</h2>
             <p>{resultados}</p>
@@ -59,7 +65,10 @@ class Reporter:
             <p>{conclusiones}</p>
             
             <!-- Aquí se insertan los gráficos -->
-            {graficos}
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; margin-top: 150px;">
+            {graficos_str}
+            </div>
+
         </body>
         </html>
         """
@@ -71,6 +80,7 @@ class Reporter:
         # Guardar el contenido HTML en un archivo
         with open(archivo_html, "w", encoding="utf-8") as file:
             file.write(html_template)
+        webbrowser.open(archivo_html)
 
         # Convertir el archivo HTML a PDF
         weasyprint.HTML(archivo_html).write_pdf(archivo_pdf)

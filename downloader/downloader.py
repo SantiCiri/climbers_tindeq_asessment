@@ -21,7 +21,8 @@ class DriveDownloader:
         self.credentials_file = credentials_file
         self.token_file = token_file
     
-    def variable_reader(self):
+    @staticmethod
+    def variable_reader():
         """Reads the excel file to find out which dates are going to be evaluated, the 
         sportsman's dni and final conclusion"""
         df=pd.read_excel("input.xlsx")
@@ -29,15 +30,16 @@ class DriveDownloader:
         dni=f"'{dni}'"
         fecha1=str(df.loc[df['concepto'] == 'fecha1', 'valor'].item())
         fecha2=str(df.loc[df['concepto'] == 'fecha2', 'valor'].item())
-        conclusion=str(df.loc[df['concepto'] == 'Conclusion Final', 'valor'].item())
-        methodology=str(df.loc[df['concepto'] == 'Metodologia', 'valor'].item())
-        objective=str(df.loc[df['concepto'] == 'Objetivo', 'valor'].item())
-        intro=str(df.loc[df['concepto'] == 'Introduccion', 'valor'].item())
-        return dni, fecha1, fecha2, intro,methodology,objective,conclusion
+        conclusion=str(df.loc[df['concepto'] == 'Conclusion Final', 'valor'].item()).replace("\n", "<br>")
+        methodology=str(df.loc[df['concepto'] == 'Metodologia', 'valor'].item()).replace("\n", "<br>")
+        objective=str(df.loc[df['concepto'] == 'Objetivo', 'valor'].item()).replace("\n", "<br>")
+        intro=str(df.loc[df['concepto'] == 'Introduccion', 'valor'].item()).replace("\n", "<br>")
+        return dni, fecha1, fecha2, intro, methodology, objective, conclusion
 
-    def download_files(self,dni):
+    @classmethod
+    def download_files(cls,dni):
         try:
-            creds = self._get_credentials()
+            creds = cls._get_credentials()
         except:
             flow = InstalledAppFlow.from_client_secrets_file(
             os.path.join(os.getcwd(), "downloader", "credentials.json"), DriveDownloader.SCOPES)
@@ -57,14 +59,14 @@ class DriveDownloader:
             logging.info("Descargando archivos")
             for item in items:
                 logging.info(u'{0} ({1})'.format(item['name'], item['id']))
-                self._download_file(service, item['id'], item['name'],dni=dni)
+                cls._download_file(cls,service=service, file_id=item['id'], file_name=item['name'],dni=dni)
         except HttpError as error:
             logging.warning(f'An error occurred -- Do you have a folder named after the DNI you are searching for?? --:\n {error}')
         try:
             # Downloads the form
             file_id="1-86qfugj7xR5G6iFmMra_U4foagMTTK85U1M9sSHj2M"
             file_name="evaluacion_leo_mirri.csv"
-            self._download_form(service, file_id, file_name)
+            cls._download_form(cls,service, file_id, file_name)
         except HttpError as error:
             print(f'An error occurred: {error}')
             logging.error(f'An error occurred: {error}')
