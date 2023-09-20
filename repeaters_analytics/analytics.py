@@ -35,7 +35,7 @@ class Balance():
         #Retrieves the average weight of climbers from the balance data.
         #Returns:
         #- climbers_weight (float): The average weight of climbers.
-        #Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climbers.
+        #Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climber
         df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
         self.climbers_weight = round(df2["weight"].mean(),2)
         logging.info("Peso de escalador calculado")
@@ -240,7 +240,8 @@ class Cfd():
             if match:
                 date = match.group(1)
                 if re.search(self.date_range_pattern, date):
-                    self.cfd_df = pd.read_csv(path)
+                    self.cfd_df = pd.read_csv(path,skiprows=3)
+                    self.cfd=pd.read_csv(path).loc[0, "critical force"]
 
     def get_climbers_weight(self):
         df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
@@ -278,7 +279,6 @@ class Cfd():
         X_poly = self.poly.fit_transform(X)
         self.y_pred = self.model.predict(X_poly)
         self.critical_force=min(self.y_pred)
-        return self.critical_force
 
     def plot(self):
         fig = go.Figure()
@@ -292,6 +292,6 @@ class Cfd():
 
         fig.add_trace(px.line(x=self.cfd_df["time"], y=self.y_pred).data[0])
         fig.add_trace(go.Scatter(x=[0, 7], y=[self.max_strength,self.max_strength], mode='lines', line=dict(color='red'),name="Fuerza Maxima"))
-        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.critical_force*100)}%',
+        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.cfd/self.climbers_weight*100)}%',
                            xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)')
         return fig

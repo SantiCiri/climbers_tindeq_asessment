@@ -10,8 +10,6 @@ class Unzipper:
     def __init__(self, dni):
         dni_int=dni.replace("'", "")
         self.dir_path = f"{os.getcwd()}/{dni_int}"
-        self.files = [f for f in os.listdir(f"{os.getcwd()}/{dni_int}") if not f.startswith('.')]
-        #files=glob.glob(os.path.join(self.dir_path, '*'))
     
     def unzip_repeaters(self):
         for file_name in (f for f in os.listdir(self.dir_path) if f.endswith('.zip') and not f.startswith('.')):
@@ -29,6 +27,7 @@ class Unzipper:
                 os.makedirs(full_file_dir)
             with zipfile.ZipFile(self.dir_path+"/"+file_name, 'r') as zip_ref:
                 zip_ref.extractall(full_file_dir)
+            os.remove(self.dir_path+"/"+file_name)
 
     def move_csvs(self):
         #For rfd and balanz
@@ -37,6 +36,9 @@ class Unzipper:
         if not any("balanza" in path for path in os.listdir(self.dir_path)):
             logging.error("No Balance")
             print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
+        if not any("cf_test" in path for path in os.listdir(self.dir_path)):
+            logging.error("No Balance")
+            print("NO HAY CFD --- NO HAY CFD --- NO HAY CFD")
         for file_name in (f for f in os.listdir(self.dir_path) if not f.startswith('.')):
             if "rfd" in file_name:
                 date=file_name[18:28]
@@ -54,3 +56,11 @@ class Unzipper:
                         os.makedirs(full_file_dir)
                     shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
                     logging.info("Found and placed correctly Balance")
+            if "cf_test" in file_name:
+                    date=file_name[-23:-13]
+                    exercise="cf"
+                    full_file_dir = os.path.join(self.dir_path,date,"cfd")
+                    if not os.path.exists(full_file_dir):
+                        os.makedirs(full_file_dir)
+                    shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,"data_set_1.csv"))
+                    logging.info("Found and placed correctly CFD")

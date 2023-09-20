@@ -28,9 +28,9 @@ if __name__ == '__main__':
     cfd_plot=cfd.plot()
     repeaters=Calc_from_repeaters(dni=dni,fecha1=fecha1, fecha2=fecha2,rfd_fig=rfd_fig)
     repeaters_plot=repeaters.plot_exercises()
-    reporter=Reporter(dni, fecha1, fecha2, intro,methodology,objective,conclusion)
-    full_name=reporter.read_form()
-    reporter.create_html(dni=dni,
+    full_name, df=Reporter().read_form(dni=dni)
+    Reporter().create_html(dni=dni,
+                         fecha2=fecha2,
                          titulo = f"Informe {full_name} al {fecha2.replace('_','/')}",
                          secciones = ["Introducción", "Objetivo", "Metodología", "Resultados", "Conclusiones"],
                          introduccion=intro,
