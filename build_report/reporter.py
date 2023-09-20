@@ -1,39 +1,27 @@
 import pandas as pd
-from string import Template
-import weasyprint
+#import weasyprint
 import pdfkit
-import plotly.graph_objs as go
-import plotly.io as pio
 import webbrowser
-from selenium import webdriver
-from datetime import datetime, timedelta
 import os
 import logging
 logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class Reporter:
     """Builds a report in html powered by plotly"""
-    def __init__(self, dni, fecha1, fecha2, intro,methodology,objective,conclusion):
-        self.dni=int(dni.replace("'", ""))
-        self.fecha1=fecha1
-        self.fecha2=fecha2
-        self.intro=intro
-        self.methodology=methodology
-        self.objective=objective
-        self.conclusion=conclusion
-    
-    def read_form(self):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def read_form(dni):
+        dni=int(dni.replace("'", ""))
         df=pd.read_csv("evaluacion_leo_mirri.csv")
         df["Marca temporal"]=pd.to_datetime(df["Marca temporal"], format="%d/%m/%Y %H:%M:%S")
-        #start_date = pd.to_datetime(self.fecha1, format="%d_%m_%Y")
-        #end_date = pd.to_datetime(self.fecha2, format="%d_%m_%Y")
-        #df = df[(df["Marca temporal"] >= start_date) & (df["Marca temporal"] <= end_date)]
-        full_name_position=df.index[df["DNI (solo numeros)"]==self.dni].tolist()[0]
-        self.full_name = df["Nombre y Apellido"].iloc[full_name_position]
-        return self.full_name
-    
+        full_name_position=df.index[df["DNI (solo numeros)"]==dni].tolist()[0]
+        full_name = df["Nombre y Apellido"].iloc[full_name_position]
+        return full_name, df
+
     @staticmethod
-    def create_html(dni,titulo, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
+    def create_html(dni,fecha2,titulo, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
         dni=dni.replace("'", "")
         #Beautifies plots
         graficos_str = ''
@@ -74,16 +62,17 @@ class Reporter:
         """
 
         # Ruta del archivo HTML y PDF
-        archivo_html = os.path.join(dni, "reporte web.html")
-        archivo_pdf = os.path.join(dni, "reporte movil.pdf")
+        if not os.path.exists(os.path.join(dni, fecha2)):os.makedirs(os.path.join(dni, fecha2))
+        archivo_html = os.path.join(dni,fecha2, "reporte web.html")
+        archivo_pdf = os.path.join(dni,fecha2, "reporte movil.pdf")
 
         # Guardar el contenido HTML en un archivo
         with open(archivo_html, "w", encoding="utf-8") as file:
             file.write(html_template)
         webbrowser.open(archivo_html)
 
-        # Convertir el archivo HTML a PDF
-        weasyprint.HTML(archivo_html).write_pdf(archivo_pdf)
+        # Convertir el archivo HTML a PDF usando weasyprint
+        #weasyprint.HTML(archivo_html).write_pdf(archivo_pdf)
 
         # Convertir el archivo HTML a PDF usando pdfkit
-        pdfkit.from_file(archivo_html, archivo_pdf)
+        #pdfkit.from_file(archivo_html, archivo_pdf)
