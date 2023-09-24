@@ -154,7 +154,32 @@ class Calc_from_repeaters():
             merged_data.to_csv(repeater_path)
             repeaters_path.append(repeater_path)
         return repeaters_path
-
+    
+    def indicator_extractor(self):
+        self.repeaters_path=self._csv_wrapper(self.dni,self.start_date,self.end_date)
+        exercise_mvc_dicc={}
+        #for each exercise that can be evaluated
+        for df_path in self.repeaters_path:
+            #define the regex pattern to extract the exercise name (without the evaluated side)
+            exercise_code_pattern = r'/([^/]+)-(der|izq)/'
+            exercise_side_pattern= r'/(?P<desired_string>[^/]+)/[^/]+$'
+            #check if there is a match in the df_path (checking if the path and csv exist) and extracting the exercise's name
+            match_exercise_code = re.search(exercise_code_pattern, df_path)
+            match_exercise_side = re.search(exercise_side_pattern, df_path)
+            #if there is an exercise in the list,
+            if match_exercise_code:
+                #save the exercise's name into variable exercise_code
+                #exercise_code = match_exercise_code.group(1).replace("-", "_")
+                exercise_side = match_exercise_side.group(1)
+                #and build the pandas df
+                self.df = pd.read_csv(df_path)
+                if "flex-dedo" in exercise_side:
+                    #gets the minimum force in the 5sec post maximum. done following Torr 2020 The reliability and validity of a method for the assessment of sport rock climber's isometric finger strength
+                    mvc=self.df.loc[(self.df['time'] >= self.df['time'][self.df['weight'].idxmax()]) & (self.df['time'] <= self.df['time'][self.df['weight'].idxmax()] + 5), 'weight'].min()
+                else: mvc=self.df['weight'].max()
+                exercise_mvc_dicc[exercise_side]=mvc
+        return exercise_mvc_dicc
+    
     def plot_exercises(self):
         self.repeaters_path=self._csv_wrapper(self.dni,self.start_date,self.end_date)
         if self.rfd_fig != None: plots=[self.rfd_fig]
@@ -188,9 +213,9 @@ class Calc_from_repeaters():
         num_plots = len(plots)
         # Create the subplots with the desired grid arrangement
         cols = 2
-        rows=num_plots/cols
+        rows=int(num_plots/cols)
         #rounds up if rows is a float
-        if isinstance(rows, int)==False:rows=int(rows)+1
+        #if isinstance(rows, int)==False:rows=int(rows)+1
         fig = sp.make_subplots(rows=rows, cols=cols)
         # Add the plots to the subplots
         for i,plot in enumerate(plots,start=1):
@@ -211,7 +236,7 @@ class Calc_from_repeaters():
             max_y_value = max(np.max(trace.y) for trace in data if 'y' in trace)
             max_x_value = max(np.max(trace.x) for trace in data if 'x' in trace)
             # Update the legend position to the top
-            fig.update_layout(legend=dict(orientation='h', yanchor='top', y=1.1))
+            fig.update_layout(legend=dict(orientation='h', yanchor='top', y=1.1,font=dict(size=16)))
             # Make plots taller
             fig.update_layout(height=900)
 
@@ -291,6 +316,6 @@ class Cfd():
 
         fig.add_trace(px.line(x=self.cfd_df["time"], y=self.y_pred).data[0])
         fig.add_trace(go.Scatter(x=[0, 7], y=[self.max_strength,self.max_strength], mode='lines', line=dict(color='red'),name="Fuerza Maxima"))
-        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.climbers_cfd/self.climbers_weight*100)}%',
-                           xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)')
+        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.climbers_cfd*100/self.climbers_weight)}%',
+                           xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)',legend=dict(orientation="h",yanchor="bottom",y=1.02,xanchor="right",x=1, font=dict(size=16)))
         return fig

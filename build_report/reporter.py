@@ -3,51 +3,76 @@ import weasyprint
 import pdfkit
 import webbrowser
 import os
+import plotly.graph_objs as go
 import logging
 logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class Reporter:
     """Builds a report in html powered by plotly"""
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def read_dataset(dni):
-        dni=int(dni.replace("'", ""))
+    def __init__(self,dni):
+        self.ircra_depo = {11:"6a", 12:"6a+", 13:"6b", 14:"6b+", 15:"6c", 16:"6c+", 17:"7a", 18:"7a+", 19:"7b", 20:"7b+", 21:"7c", 
+                      22:"7c+", 23:"8a", 24:"8a+", 25:"8b", 26:"8b+", 27:"8c", 28:"8c+", 29:"9a", 30:"9a+", 31:"9b", 32:"9b+"}
+        self.ircra_bulder = {17:"V3", 18:"V4", 19:"V5", 20:"V6", 21:"V7", 22:"V7,5", 23:"V8", 24:"V9", 25:"V10", 26:"V11", 
+                       27:"V12", 28:"V13", 29:"V13,5", 30:"V14", 31:"V15", 32:"V16"}
+        self.dni=int(dni.replace("'", ""))
         df=pd.read_csv("dataset.csv")
+        df=df[df["DNI"].isin([self.dni])]
+        df=df.sort_values(by=['id_evaluacion']).drop_duplicates(subset=['DNI'],keep="last")
         df["Marca temporal"]=pd.to_datetime(df["Marca temporal"], format="%d/%m/%Y %H:%M:%S")
-        df=df[df["DNI"].isin([dni])]
-        df = df.drop_duplicates(subset=['DNI'], keep='last')
-        mail= df.at[0, "Dirección de correo electrónico"]
-        name= df.at[0, "Nombre"]
-        surname= df.at[0, "Apellido"]
-        birthdate=df.at[0, "Fecha de Nacimiento"]
-        height= df.at[0, "Altura en cm"]
-        style= df.at[0, "Estilo preferido"]
-        IRCRA_onsight= df.at[0, "Grado IRCRA a vista"]
-        IRCRA_redpoint= df.at[0, "Grado IRCRA ensayado"]
-        climbers_max_pullup= df.at[0, "Dominada maxima (kg incluyendo peso corporal)"]
-        sex=df.at[0, "Sexo"]
-        return df,mail,name,surname,birthdate, height,style,IRCRA_onsight,IRCRA_redpoint,climbers_max_pullup,sex
+        self.values= df.to_dict(orient='records')[0]
+        
+    
+    def create_html(self,fecha2, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
+        logging.info(f"Data in reporting: {self.values}")
+        name=self.values["Nombre"]
+        surname=self.values["Apellido"]
+        sexo=self.values["Sexo"]
+        if self.values['Estilo preferido']=="Deportiva":
+            redpoint_grade=next((k for k, v in self.ircra_depo.items() if v == self.values['Grado IRCRA ensayado']), None)
+        elif self.values['Estilo preferido']=="Boulder":
+            redpoint_grade=next((k for k, v in self.ircra_bulder.items() if v == self.values['Grado IRCRA ensayado']), None)
 
-    @staticmethod
-    #Actualizar esta funcion para que saque los resultados del dataset.csv
-    def create_html(dni,fecha2,titulo, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
-        dni=dni.replace("'", "")
-        #Beautifies plots
-        graficos_str = ''
+        climbers_cfd=self.values['cfd (% peso)']
+        if self.values['Mano hábil']=="Derecha":
+            climbers_mvc=self.values[f'flex-dedo-der']
+        elif self.values['Mano hábil']=="Izquierda":
+            climbers_mvc=self.values[f'flex-dedo-izq']
+        title = f"Informe {name} {surname} al {fecha2.replace('_','/')}"
+
         for plot in graficos:
-            plot = f'<div style="margin: -150px; padding: 5px; width: 100%;">{plot}</div>'
-            graficos_str += plot
+            if plot.layout.title.text == 'Fuerza crítica como % de peso corporal según grado de escalada':
+                plot.add_trace(go.Scatter(x=[redpoint_grade], y=[climbers_cfd], mode='markers', name=f'{name} {surname}'))
+            if plot.layout.title.text == f'Fuerza máxima como % de peso corporal según grado de escalada para {sexo}':
+                plot.add_trace(go.Scatter(x=[redpoint_grade], y=[climbers_mvc], mode='markers', name=f'{name} {surname}'))
+
+        #Beautifies plots
+        str_plot = ''
+        for plot in graficos:
+            html_plot=plot.to_html(include_plotlyjs="cdn").replace("\n", "")
+            str_plot += f'<div style="justify-content: center; margin: auto; width: 100%;">{html_plot}</div>'
+        
         # Plantilla HTML
         html_template = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>{titulo}a</title>
+            <title>{title}</title>
+            <style>
+            img {{
+                max-width: 100%;
+                height: auto;
+            }}
+            table {{
+                width: 100%;
+                border-collapse: collapse;
+            }}
+            table tr {{
+                vertical-align: top;
+            }}
+            </style>
         </head>
         <body>
-            <h1 style="text-align: center;">{titulo}</h1>
+            <h1 style="text-align: center;">{title}</h1>
             <h2>{secciones[0]}</h2>
             <p>{introduccion}</p>
             
@@ -64,18 +89,16 @@ class Reporter:
             <p>{conclusiones}</p>
             
             <!-- Aquí se insertan los gráficos -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; margin-top: 150px;">
-            {graficos_str}
-            </div>
-
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 0px;">
+                {str_plot}
         </body>
         </html>
         """
 
         # Ruta del archivo HTML y PDF
-        if not os.path.exists(os.path.join(dni, fecha2)):os.makedirs(os.path.join(dni, fecha2))
-        archivo_html = os.path.join(dni,fecha2, "reporte web.html")
-        archivo_pdf = os.path.join(dni,fecha2, "reporte movil.pdf")
+        if not os.path.exists(os.path.join(str(self.dni), fecha2)):os.makedirs(os.path.join(str(self.dni), fecha2))
+        archivo_html = os.path.join(str(self.dni), f"reporte web {fecha2}.html")
+        archivo_pdf = os.path.join(str(self.dni), f"reporte movil {fecha2}.pdf")
 
         # Guardar el contenido HTML en un archivo
         with open(archivo_html, "w", encoding="utf-8") as file:
