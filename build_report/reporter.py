@@ -1,5 +1,5 @@
 import pandas as pd
-#import weasyprint
+import weasyprint
 import pdfkit
 import webbrowser
 import os
@@ -12,15 +12,26 @@ class Reporter:
         pass
 
     @staticmethod
-    def read_form(dni):
+    def read_dataset(dni):
         dni=int(dni.replace("'", ""))
-        df=pd.read_csv("evaluacion_leo_mirri.csv")
+        df=pd.read_csv("dataset.csv")
         df["Marca temporal"]=pd.to_datetime(df["Marca temporal"], format="%d/%m/%Y %H:%M:%S")
-        full_name_position=df.index[df["DNI (solo numeros)"]==dni].tolist()[0]
-        full_name = df["Nombre y Apellido"].iloc[full_name_position]
-        return full_name, df
+        df=df[df["DNI"].isin([dni])]
+        df = df.drop_duplicates(subset=['DNI'], keep='last')
+        mail= df.at[0, "Dirección de correo electrónico"]
+        name= df.at[0, "Nombre"]
+        surname= df.at[0, "Apellido"]
+        birthdate=df.at[0, "Fecha de Nacimiento"]
+        height= df.at[0, "Altura en cm"]
+        style= df.at[0, "Estilo preferido"]
+        IRCRA_onsight= df.at[0, "Grado IRCRA a vista"]
+        IRCRA_redpoint= df.at[0, "Grado IRCRA ensayado"]
+        climbers_max_pullup= df.at[0, "Dominada maxima (kg incluyendo peso corporal)"]
+        sex=df.at[0, "Sexo"]
+        return df,mail,name,surname,birthdate, height,style,IRCRA_onsight,IRCRA_redpoint,climbers_max_pullup,sex
 
     @staticmethod
+    #Actualizar esta funcion para que saque los resultados del dataset.csv
     def create_html(dni,fecha2,titulo, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
         dni=dni.replace("'", "")
         #Beautifies plots
@@ -72,7 +83,9 @@ class Reporter:
         webbrowser.open(archivo_html)
 
         # Convertir el archivo HTML a PDF usando weasyprint
-        #weasyprint.HTML(archivo_html).write_pdf(archivo_pdf)
+        weasyprint.HTML(archivo_html).write_pdf(archivo_pdf)
 
         # Convertir el archivo HTML a PDF usando pdfkit
         #pdfkit.from_file(archivo_html, archivo_pdf)
+
+        logging.info("Report created succesfully")
