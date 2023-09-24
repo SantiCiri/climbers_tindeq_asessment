@@ -37,7 +37,7 @@ class Unzipper:
             logging.error("No Balance")
             print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
         if not any("cf_test" in path for path in os.listdir(self.dir_path)):
-            logging.error("No Balance")
+            logging.error("No CFD")
             print("NO HAY CFD --- NO HAY CFD --- NO HAY CFD")
         for file_name in (f for f in os.listdir(self.dir_path) if not f.startswith('.')):
             if "rfd" in file_name:

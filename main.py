@@ -2,6 +2,7 @@ from downloader.downloader import DriveDownloader
 from unzipper.unzipper import Unzipper
 from repeaters_analytics.analytics import Cfd,Calc_from_repeaters,Rfd,Balance
 from build_report.reporter import Reporter
+from dataset_builder.dataset_builder import Dataset_Builder
 
 if __name__ == '__main__':
     rfd_fig=None
@@ -17,21 +18,28 @@ if __name__ == '__main__':
     weight=Balance(fecha1=fecha1,fecha2=fecha2,dni=dni)
     climbers_weight=weight.get_climbers_weight()
     rfd=Rfd(fecha1=fecha1,fecha2=fecha2,dni=dni)
-    climbers_rfd=rfd.get_climbers_rfd()
+    climbers_rfd=rfd.get_climbers_rfd()/climbers_weight
     rfd_fig=rfd.plot_rfd()
     cfd=Cfd(dni=dni,fecha1=fecha1,fecha2=fecha2,climbers_weight=climbers_weight)
+    climbers_cfd=cfd.climbers_cfd/climbers_weight
     cfd.calc_perc_body_mass()
     cfd.remove_rests()
-    climbers_max_strength=cfd.get_max_strength()
+    cfd.get_max_strength()
     cfd.fit_model()
-    climbers_cf=cfd.predict_cfd()
+    cfd.predict_cfd()
     cfd_plot=cfd.plot()
     repeaters=Calc_from_repeaters(dni=dni,fecha1=fecha1, fecha2=fecha2,rfd_fig=rfd_fig)
     repeaters_plot=repeaters.plot_exercises()
-    full_name, df=Reporter().read_form(dni=dni)
+    dataset=Dataset_Builder(dni=dni,climbers_rfd=climbers_rfd,climbers_weight=climbers_weight,climbers_cfd=climbers_cfd)
+    dataset.save_evaluation_data()
+
+
+
+    """
+    df,mail,name,surname,birthdate, height,style,IRCRA_onsight,IRCRA_redpoint,climbers_max_pullup,sex=Reporter().read_form(dni=dni)
     Reporter().create_html(dni=dni,
                          fecha2=fecha2,
-                         titulo = f"Informe {full_name} al {fecha2.replace('_','/')}",
+                         titulo = f"Informe {name} {surname} al {fecha2.replace('_','/')}",
                          secciones = ["Introducción", "Objetivo", "Metodología", "Resultados", "Conclusiones"],
                          introduccion=intro,
                          objetivo = objective,
@@ -40,4 +48,5 @@ if __name__ == '__main__':
                          conclusiones = conclusion,
                          graficos = [repeaters_plot.to_html(include_plotlyjs="cdn").replace("\n",""),
                                      cfd_plot.to_html(include_plotlyjs="cdn").replace("\n","")])
+                                     """
 

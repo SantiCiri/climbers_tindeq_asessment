@@ -241,7 +241,7 @@ class Cfd():
                 date = match.group(1)
                 if re.search(self.date_range_pattern, date):
                     self.cfd_df = pd.read_csv(path,skiprows=3)
-                    self.cfd=pd.read_csv(path).loc[0, "critical force"]
+                    self.climbers_cfd=pd.read_csv(path).loc[0, "critical force"]
 
     def get_climbers_weight(self):
         df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
@@ -264,7 +264,6 @@ class Cfd():
     def get_max_strength(self):
         first_seconds = self.cfd_df[((self.cfd_df["time"] > 2) & (self.cfd_df["time"] < 5))]
         self.max_strength = first_seconds["perc_body_mass"].mean()
-        return self.max_strength
 
     def fit_model(self):
         X = self.weighted_df[["time"]]
@@ -292,6 +291,6 @@ class Cfd():
 
         fig.add_trace(px.line(x=self.cfd_df["time"], y=self.y_pred).data[0])
         fig.add_trace(go.Scatter(x=[0, 7], y=[self.max_strength,self.max_strength], mode='lines', line=dict(color='red'),name="Fuerza Maxima"))
-        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.cfd/self.climbers_weight*100)}%',
+        fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.climbers_cfd/self.climbers_weight*100)}%',
                            xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)')
         return fig
