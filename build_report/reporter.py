@@ -15,15 +15,20 @@ class Reporter:
         self.ircra_bulder = {17:"V3", 18:"V4", 19:"V5", 20:"V6", 21:"V7", 22:"V7,5", 23:"V8", 24:"V9", 25:"V10", 26:"V11", 
                        27:"V12", 28:"V13", 29:"V13,5", 30:"V14", 31:"V15", 32:"V16"}
         self.dni=int(dni.replace("'", ""))
-        df=pd.read_csv("dataset.csv")
+        df=pd.read_csv("dataset.csv", index_col=0)
         df=df[df["DNI"].isin([self.dni])]
         df=df.sort_values(by=['id_evaluacion']).drop_duplicates(subset=['DNI'],keep="last")
         df["Marca temporal"]=pd.to_datetime(df["Marca temporal"], format="%d/%m/%Y %H:%M:%S")
         self.values= df.to_dict(orient='records')[0]
-        
-    
-    def create_html(self,fecha2, secciones, introduccion, objetivo,metodologia, resultados, conclusiones, graficos):
+            
+    def create_html(self,fecha2, secciones, introduccion, objetivo,metodologia, graficos):
         logging.info(f"Data in reporting: {self.values}")
+        #Remove keys to build the results
+        self.resultados=self.values.copy()
+        keys_to_remove = ['id_evaluacion','Marca temporal','Dirección de correo electrónico','DNI','Nombre','Apellido','Fecha de Nacimiento',
+                          'Altura en cm','Estilo preferido','Sexo','Años Escalando','Mano hábil']
+        for key in keys_to_remove: self.resultados.pop(key, None)
+
         name=self.values["Nombre"]
         surname=self.values["Apellido"]
         sexo=self.values["Sexo"]
@@ -51,25 +56,18 @@ class Reporter:
             html_plot=plot.to_html(include_plotlyjs="cdn").replace("\n", "")
             str_plot += f'<div style="justify-content: center; margin: auto; width: 100%;">{html_plot}</div>'
         
+        #make table Results
+        html_table = "<table><tr><th>Indicador</th><th>Valor</th></tr>"
+        for key, value in self.resultados.items():
+            html_table += f"<tr><td>{key}</td><td>{value}</td></tr>"
+        html_table += "</table>"
+
         # Plantilla HTML
         html_template = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <title>{title}</title>
-            <style>
-            img {{
-                max-width: 100%;
-                height: auto;
-            }}
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-            }}
-            table tr {{
-                vertical-align: top;
-            }}
-            </style>
         </head>
         <body>
             <h1 style="text-align: center;">{title}</h1>
@@ -83,10 +81,7 @@ class Reporter:
             <p>{metodologia}</p>
             
             <h2>{secciones[3]}</h2>
-            <p>{resultados}</p>
-            
-            <h2>{secciones[4]}</h2>
-            <p>{conclusiones}</p>
+            <p>{html_table}</p>
             
             <!-- Aquí se insertan los gráficos -->
             <div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 0px;">

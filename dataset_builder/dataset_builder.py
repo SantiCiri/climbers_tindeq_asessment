@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import plotly.subplots as sp
 import plotly.express as px
 import pandas as pd
+import math
 import numpy as np
 import os
 import re
@@ -29,35 +30,45 @@ class Dataset_Builder():
         #Returns:
         #Updated .csv
         
+        def round_3sf(number):
+            if number == 0:
+                return 0.0
+            else:
+                return round(number, 3 - int(math.floor(math.log10(abs(number)))) - 1)
+
         #Creates a .csv if it does not exist yet
         if not os.path.isfile("dataset.csv"):
             df = pd.DataFrame()
             df.to_csv("dataset.csv")
         
         #Read de dataset.csv
-        df=pd.read_csv("dataset.csv")
+        df=pd.read_csv("dataset.csv",index_col=0)
 
         #If df is empty, then evaluation id = 1, else, make it auto incremental
         if df.empty: id_evaluacion=1
         else: id_evaluacion = df['id_evaluacion'].max() + 1
 
+        #Corrects the pull up column to measure it in Body Weight %
+        self.values['Dominada maxima (% peso corporal)'] = self.values.pop('Dominada maxima (kg que puede sumar)', None)
+        self.values['Dominada maxima (% peso corporal)'] = round_3sf(float((self.values['Dominada maxima (% peso corporal)']) + self.climbers_weight)*100/self.climbers_weight)
+
         #Divides every value in mvc_dicc by the climber's weight
         for key in self.exercise_mvc_dicc:
-            self.exercise_mvc_dicc[key] = round(self.exercise_mvc_dicc[key]*100/ self.climbers_weight,3)
+            self.exercise_mvc_dicc[key] = round_3sf(self.exercise_mvc_dicc[key]*100/ self.climbers_weight)
+        
+        self.climbers_rfd=round_3sf(self.climbers_rfd)
+        self.climbers_cfd=round_3sf(self.climbers_cfd)
 
         #Takes the dictionary with the values of the new analysis and adds the variables taken from tindeq
         self.values={**self.values,**self.exercise_mvc_dicc,**{'id_evaluacion':id_evaluacion,'rfd (% peso/s)':self.climbers_rfd,
                             'peso (kg)':self.climbers_weight,'cfd (% peso)':self.climbers_cfd}}
 
-        #Corrects the pull up column to measure it in Body Weight %
-        self.values['Dominada maxima (% peso corporal)'] = self.values.pop('Dominada maxima (kg incluyendo peso corporal)', None)
-        self.values['Dominada maxima (% peso corporal)'] = round(self.values['Dominada maxima (% peso corporal)'] / self.climbers_weight,3)
         # Joins the new data with the previous
-        df = pd.concat([df,pd.DataFrame(self.values, index=[0])])
+        df = pd.concat([df,pd.DataFrame([self.values])])
         # Reposition the column id_evaluacion to the first position
         df.insert(0, 'id_evaluacion', df.pop('id_evaluacion'))
-        # Drop the columns that contain Unnamed
-        df = df.drop(columns=[col for col in df.columns if "Unnamed" in col])
         # Save the updated df
         df.to_csv("dataset.csv")
         logging.info("Data saved to dataset.csv succesfully")
+
+            
