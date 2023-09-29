@@ -46,7 +46,6 @@ if __name__ == '__main__':
                          introduccion=intro,
                          objetivo = objective,
                          metodologia=methodology,
-                         resultados = "",
                          conclusiones = conclusion,
                          graficos = [repeaters_plot,cfd_plot,cfd_global_plot,mvc_global_plot])
 
