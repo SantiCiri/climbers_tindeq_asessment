@@ -1,6 +1,7 @@
 import pandas as pd
 import weasyprint
 import pdfkit
+import math
 import webbrowser
 import os
 import plotly.graph_objs as go
@@ -25,6 +26,8 @@ class Reporter:
         logging.info(f"Data in reporting: {self.values}")
         #Remove keys to build the results
         self.resultados=self.values.copy()
+        #Remove empty values
+        self.resultados = {key: value for key, value in self.resultados.items() if not (isinstance(value, float) and math.isnan(value))}
         keys_to_remove = ['id_evaluacion','Marca temporal','Dirección de correo electrónico','DNI','Nombre','Apellido','Fecha de Nacimiento',
                           'Altura en cm','Estilo preferido','Sexo','Años Escalando','Mano hábil']
         for key in keys_to_remove: self.resultados.pop(key, None)
@@ -42,6 +45,7 @@ class Reporter:
             climbers_mvc=self.values[f'flex-dedo-der']
         elif self.values['Mano hábil']=="Izquierda":
             climbers_mvc=self.values[f'flex-dedo-izq']
+
         title = f"Informe {name} {surname} al {fecha2.replace('_','/')}"
 
         for plot in graficos:

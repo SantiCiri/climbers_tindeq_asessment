@@ -12,17 +12,19 @@ class Unzipper:
         self.dir_path = f"{os.getcwd()}/{dni_int}"
     
     def unzip_repeaters(self):
-        for file_name in (f for f in os.listdir(self.dir_path) if f.endswith('.zip') and not f.startswith('.')):
-            match = re.search(r"(\d{1,2}_\d{1,2}_\d{4})", file_name)
+        files=(f for f in os.listdir(self.dir_path) if f.endswith('.zip') and not f.startswith('.'))
+        for file_name in files:
+            match = re.search(r"repeaters_(\d{4})_(\d{2})_(\d{2})", file_name)
             if match:
-                 fecha = match.group(1)
+                # Extract the matched groups and rearrange them into "DD_MM_YYYY" format
+                yyyy, dd, mm = match.groups()
+                date = f"{dd.zfill(2)}_{mm.zfill(2)}_{yyyy.zfill(2)}"
+                exercise=re.search(r"&(.*)\.zip", file_name).group(1)
+                full_file_dir = os.path.join(self.dir_path,date,exercise)
             else: 
                  print("No se encontró la fecha")
                  logging.error("Could not find the date")                 
-            date, month, year = fecha.split("_")
-            date = f"{date.zfill(2)}_{month.zfill(2)}_{year}"
-            exercise=re.search(r"&(.*)\.zip", file_name).group(1)
-            full_file_dir = os.path.join(self.dir_path,date,exercise)
+
             if not os.path.exists(full_file_dir):
                 os.makedirs(full_file_dir)
             with zipfile.ZipFile(self.dir_path+"/"+file_name, 'r') as zip_ref:

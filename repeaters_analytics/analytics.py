@@ -177,7 +177,8 @@ class Calc_from_repeaters():
                     #gets the minimum force in the 5sec post maximum. done following Torr 2020 The reliability and validity of a method for the assessment of sport rock climber's isometric finger strength
                     mvc=self.df.loc[(self.df['time'] >= self.df['time'][self.df['weight'].idxmax()]) & (self.df['time'] <= self.df['time'][self.df['weight'].idxmax()] + 5), 'weight'].min()
                 else: mvc=self.df['weight'].max()
-                exercise_mvc_dicc[exercise_side]=mvc
+                # Multiplies by 2 because Torr 2020 used both hands
+                exercise_mvc_dicc[exercise_side]=mvc*2
         return exercise_mvc_dicc
     
     def plot_exercises(self):
@@ -203,6 +204,8 @@ class Calc_from_repeaters():
                     globals()[exercise_code] = go.Figure()
                     globals()[exercise_side] = go.Scatter(x=self.df['time'], y=self.df['weight'], mode='markers',marker_size=3, name=exercise_side)
                     globals()[exercise_code].add_trace(globals()[exercise_side])
+                    globals()[exercise_code].update_layout(title=exercise_code, xaxis_title="Tiempo (seg)",
+                                                            yaxis_title="Peso (kg)")
                     plots.append(globals()[exercise_code])
                 else:
                     globals()[exercise_side] = go.Scatter(x=self.df['time'], y=self.df['weight'], mode='markers',marker_size=3, name=exercise_side)
@@ -238,7 +241,8 @@ class Calc_from_repeaters():
             # Update the legend position to the top
             fig.update_layout(legend=dict(orientation='h', yanchor='top', y=1.1,font=dict(size=16)))
             # Make plots taller
-            fig.update_layout(height=900)
+            height=row*450
+            fig.update_layout(height=height)
 
             # Add title annotation to the subplot
             fig.add_annotation(
