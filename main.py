@@ -10,11 +10,11 @@ if __name__ == '__main__':
     #Lee la información del excel input
     dni, fecha1, fecha2, intro, methodology, objective, conclusion=DriveDownloader.variable_reader()
     #descarga los archivos de ese DNI en una carpeta con ese DNI
-    #DriveDownloader.download_files(dni=dni)
+    DriveDownloader.download_files(dni=dni)
     #descomprime todos los archivos de la carpeta de ese DNI
-    #unzip=Unzipper(dni)
-    #unzip.unzip_repeaters()
-    #unzip.move_csvs()
+    unzip=Unzipper(dni)
+    unzip.unzip_repeaters()
+    unzip.move_csvs()
 
     weight=Balance(fecha1=fecha1,fecha2=fecha2,dni=dni)
     climbers_weight=weight.get_climbers_weight()
@@ -46,6 +46,5 @@ if __name__ == '__main__':
                          introduccion=intro,
                          objetivo = objective,
                          metodologia=methodology,
-                         conclusiones = conclusion,
                          graficos = [repeaters_plot,cfd_plot,cfd_global_plot,mvc_global_plot])
 

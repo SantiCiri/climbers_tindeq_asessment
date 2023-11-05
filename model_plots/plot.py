@@ -31,9 +31,9 @@ class Global_plots:
             inf_limit= [5.82653*x + 5.09 for x in x_values]
 
         # Define the trace for the scatter plot
-        trace_median = go.Scatter(x=x_values,y=median,mode='lines',name='mediana')
-        trace_sup_limit = go.Scatter(x=x_values,y=sup_limit, mode='lines',name='limite_superior' )
-        trace_inf_limit = go.Scatter(x=x_values,y=inf_limit, mode='lines',name='limite_inferior' )
+        trace_median = go.Scatter(x=x_values,y=median,mode='lines',name='Mediana')
+        trace_sup_limit = go.Scatter(x=x_values,y=sup_limit, mode='lines',name='Percentil 95' )
+        trace_inf_limit = go.Scatter(x=x_values,y=inf_limit, mode='lines',name='Percentil 5' )
         # Define the scatter plot layout
         layout = go.Layout(
             title=f'Fuerza máxima como % de peso corporal según grado de escalada para {sexo}',
@@ -61,7 +61,7 @@ class Global_plots:
             x=x_values,
             y=y_values,
             mode='lines',
-            name='Line through Points'
+            name='Valores modelo de fuerza máxima'
         )
         # Define the scatter plot layout
         layout = go.Layout(
