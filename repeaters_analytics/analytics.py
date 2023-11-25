@@ -32,10 +32,11 @@ class Balance():
                     self.balance_df = pd.read_csv(path,skiprows=3,header=0)
 
     def get_climbers_weight(self):
-        #Retrieves the average weight of climbers from the balance data.
-        #Returns:
-        #- climbers_weight (float): The average weight of climbers.
-        #Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climber
+        """
+        Retrieves the average weight of climbers from the balance data.
+        Returns:
+        - climbers_weight (float): The average weight of climbers.
+        Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climber"""
         df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
         self.climbers_weight = round(df2["weight"].mean(),2)
         logging.info("Peso de escalador calculado")
@@ -57,33 +58,39 @@ class Rfd():
             if match:
                 date = match.group(1)
                 if re.search(self.date_range_pattern, date):
-                    # Read the "rfd2080" column data from the CSV file into a pandas DataFrame
-                    self.rfd = pd.read_csv(path,usecols=["rfd2080"])
                     # Read the CSV file into a pandas DataFrame, skipping the first 2 rows and using the third row as the header
                     self.rfd_df = pd.read_csv(path,skiprows=2,header=0)
     def get_climbers_rfd(self):
-        #Retrieves the Rfd value of climbers.
-        #Returns:
-        #- climbers_rfd (float): The Rfd value of climbers.
-        #Extracts the Rfd value from the loaded Rfd DataFrame and returns it as the Rfd value of climbers.
-        self.climbers_rfd=round(self.rfd["rfd2080"].iloc[0],2)
+        """Retrieves the Rfd value of climbers. rfd calculated as the force in kg/s made the first 200ms after making 0,4kg of force.
+        Returns:
+        - climbers_rfd (float): The Rfd value of climbers."""
+        
+        # Find the index where the weight is at least 0.4 kg
+        start_index = self.rfd_df[self.rfd_df['weight'] >= 0.4].index.min()
+
+        # Filter the DataFrame for the first 0.2 seconds after at least 0.4 kg weight is recorded
+        end_time = self.rfd_df.loc[start_index, 'time'] + 0.2
+        df = self.rfd_df[(self.rfd_df['time'] >= self.rfd_df.loc[start_index, 'time']) & (self.rfd_df['time'] <= end_time)]
+
+        # Capture min and max weight and corresponding times
+        self.min_weight = df['weight'].min()
+        self.max_weight = df['weight'].max()
+        self.min_time = df.loc[df['weight'].idxmin(), 'time']
+        self.max_time = df.loc[df['weight'].idxmax(), 'time']
+
+        # Calculate the differences
+        weight_difference = self.max_weight - self.min_weight
+        time_difference = self.max_time - self.min_time
+
+        self.climbers_rfd=round(weight_difference/time_difference)
         logging.info("RFD calculado")
         return self.climbers_rfd
     
     def plot_rfd(self):
-        # Calculate the thresholds
-        twenty_percent = 0.2 * self.rfd_df['weight'].max()
-        eighty_percent = 0.8 * self.rfd_df['weight'].max()
-        # Filter the DataFrame based on the thresholds
-        twenty_df = self.rfd_df[self.rfd_df['weight'] > twenty_percent]
-        eighty_df = self.rfd_df[self.rfd_df['weight'] > eighty_percent]
-        # Find the minimum x values
-        min_x_value = twenty_df['time'].min()
-        max_x_value = eighty_df['time'].min()
         # Create the figure
         rfd_fig = go.Figure()
-        rfd_fig.add_trace(go.Scatter(x=self.rfd_df['time'], y=self.rfd_df['weight'], mode='lines',name="Desarrollo de la Fuerza"))
-        rfd_fig.add_trace(go.Scatter(x=[min_x_value, max_x_value], y=[twenty_percent,eighty_percent], 
+        rfd_fig.add_trace(go.Scatter(x=self.rfd_df['time'], y=self.rfd_df['weight'], mode='lines',name="Fuerza de contacto (RFD)"))
+        rfd_fig.add_trace(go.Scatter(x=[self.min_time, self.max_time], y=[self.min_weight,self.max_weight], 
                                     mode='lines', line=dict(color='red'),name="Potencia"))
         rfd_fig.update_layout(title=f'Potencia = {self.climbers_rfd} kg/s',
                               xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (Kg)')
