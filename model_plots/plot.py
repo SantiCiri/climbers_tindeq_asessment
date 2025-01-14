@@ -38,7 +38,7 @@ class Global_plots:
         layout = go.Layout(
             title=f'Fuerza máxima como % de peso corporal según grado de escalada para {sexo}',
             xaxis=dict(title='grado de escalada',
-                    tickmode='array',                    
+                    tickmode='array',
                     tickvals=self.tickvals,
                     ticktext=self.ticktext),
             yaxis=dict(title='Fuerza máxima como % de peso'))

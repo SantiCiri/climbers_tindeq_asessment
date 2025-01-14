@@ -17,7 +17,9 @@ if __name__ == '__main__':
     unzip.move_csvs()
 
     weight=Balance(fecha1=fecha1,fecha2=fecha2,dni=dni)
-    climbers_weight=weight.get_climbers_weight()
+
+    climbers_weight=weight.get_climbers_weight(start_date=fecha1,end_date=fecha2)
+
     rfd=Rfd(fecha1=fecha1,fecha2=fecha2,dni=dni)
     climbers_rfd=rfd.get_climbers_rfd()*100/climbers_weight
     rfd_fig=rfd.plot_rfd()

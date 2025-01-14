@@ -50,7 +50,8 @@ class Dataset_Builder():
 
         #Corrects the pull up column to measure it in Body Weight %
         self.values['Dominada maxima (% peso corporal)'] = self.values.pop('Dominada maxima (kg que puede sumar)', None)
-        self.values['Dominada maxima (% peso corporal)'] = round_3sf(float((self.values['Dominada maxima (% peso corporal)']) + self.climbers_weight)*100/self.climbers_weight)
+        self.values['Dominada maxima (% peso corporal)']=self.values['Dominada maxima (% peso corporal)'].replace(',', '.')
+        self.values['Dominada maxima (% peso corporal)'] = round_3sf((float(self.values['Dominada maxima (% peso corporal)']) + self.climbers_weight)/self.climbers_weight)*100
 
         #Divides every value in mvc_dicc by the climber's weight
         for key in self.exercise_mvc_dicc:
