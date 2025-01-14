@@ -35,9 +35,9 @@ class Unzipper:
         #For rfd and balanz
         if not any("rfd" in path for path in os.listdir(self.dir_path)):
             logging.error("No RFD")
-        if not any("balanza" in path for path in os.listdir(self.dir_path)):
-            logging.error("No Balance")
-            print("NO HAY BALANZA --- NO HAY BALANZA --- NO HAY BALANZA")
+        if not any("balanza" or "balance" in path for path in os.listdir(self.dir_path)):
+            logging.info("No Balance from tindeq")
+            print("NO HAY BALANZA DE TINDEQ --- NO HAY BALANZA DE TINDEQ--- NO HAY BALANZA DE TINDEQ")
         if not any("cf_test" in path for path in os.listdir(self.dir_path)):
             logging.error("No CFD")
             print("NO HAY CFD --- NO HAY CFD --- NO HAY CFD")
@@ -50,8 +50,16 @@ class Unzipper:
                     os.makedirs(full_file_dir)
                 shutil.move(os.path.join(self.dir_path,file_name),os.path.join(full_file_dir,file_name))
                 logging.info("Found and placed correctly RFD")
-            if "balanza" in file_name:
-                    date=file_name[32:42]
+            if "balan" in file_name:
+                    parts = file_name.split("balance_")
+                    # Verificar si existe la parte después de "balance_"
+                    if len(parts) > 1:
+                        # Tomar los primeros 10 caracteres de la parte después de "balance_"
+                        date = parts[1][:10]
+                    else:
+                        parts = file_name.split("balanza_")
+                        date = parts[1][:10]
+
                     exercise="balanza"
                     full_file_dir = os.path.join(self.dir_path,date,exercise)
                     if not os.path.exists(full_file_dir):

@@ -31,15 +31,35 @@ class Balance():
                     # Read the CSV file into a pandas DataFrame, skipping the first 3 rows and using the fourth row as the header
                     self.balance_df = pd.read_csv(path,skiprows=3,header=0)
 
-    def get_climbers_weight(self):
+    def get_climbers_weight(self,start_date,end_date):
         """
         Retrieves the average weight of climbers from the balance data.
         Returns:
         - climbers_weight (float): The average weight of climbers.
         Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climber"""
-        df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
-        self.climbers_weight = round(df2["weight"].mean(),2)
-        logging.info("Peso de escalador calculado")
+        
+        df=pd.read_csv("evaluacion_escalada.csv")
+        start_date = pd.to_datetime(start_date, format='%d_%m_%Y')
+        end_date = pd.to_datetime(end_date, format='%d_%m_%Y')
+        # Convierte la columna 'Marca temporal' a datetime
+        df['Marca temporal'] = pd.to_datetime(df['Marca temporal'], format='%d/%m/%Y %H:%M:%S', errors='coerce')
+
+        df['DNI'] = df['DNI'].astype(str)
+        # Filtra el DataFrame
+        df = df[(df['Marca temporal'] >= start_date) & 
+                (df['Marca temporal'] <= end_date)]
+
+        df=df[df['DNI'].isin([self.dni])]
+        df = df.reset_index(drop=True)
+        try:
+            self.climbers_weight=df.loc[0, 'Peso (kg sin decimales)']  # This retrieves the value of the first row.
+            self.climbers_weight = round(self.climbers_weight,2)
+            logging.info("Balanza tomada por formulario")
+        except:
+            logging.info("No se encontró ingreso manual de balanza. Buscando calcular por tindeq")
+            df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
+            self.climbers_weight = round(df2["weight"].mean(),2)
+            logging.info("Peso de escalador calculado por tindeq")
         return self.climbers_weight
 
 class Rfd():
@@ -64,9 +84,17 @@ class Rfd():
         """Retrieves the Rfd value of climbers. rfd calculated as the force in kg/s made the first 200ms after making 0,4kg of force.
         Returns:
         - climbers_rfd (float): The Rfd value of climbers."""
-        
-        # Find the index where the weight is at least 0.4 kg
-        start_index = self.rfd_df[self.rfd_df['weight'] >= 0.4].index.min()
+
+        # Encuentra los índices donde weight cruza 4
+        ### ESTO HAY QUE CAMBIARLO POR 0.4
+        crossings = self.rfd_df[(self.rfd_df['weight'] >= 4) & (self.rfd_df['weight'].shift(1) < 4)].index
+
+        # Captura el índice justo antes del último cruce
+        if len(crossings) > 0:
+            last_crossing = crossings[-1]
+            start_index = last_crossing - 1
+        else:
+            start_index = None
 
         # Filter the DataFrame for the first 0.2 seconds after at least 0.4 kg weight is recorded
         end_time = self.rfd_df.loc[start_index, 'time'] + 0.2
@@ -276,7 +304,18 @@ class Cfd():
             if match:
                 date = match.group(1)
                 if re.search(self.date_range_pattern, date):
-                    self.cfd_df = pd.read_csv(path,skiprows=3)
+                    # Leer el archivo para identificar la fila del encabezado
+                    with open(path, 'r') as file:
+                        for i, line in enumerate(file):
+                            # Dividir la línea por comas y verificar los valores
+                            if line.strip().split(',') == ['time', 'weight']:
+                                header_row = i  # Almacenar el índice de la fila del encabezado
+                                break
+
+                    # Leer el archivo a partir de la fila encontrada
+                    self.cfd_df = pd.read_csv(path, skiprows=header_row)
+                    # A veces por alguna razon CFD no arranca en tiempo = 0. aca arreglamos ese bug
+                    self.cfd_df['time'] = self.cfd_df['time'] - self.cfd_df['time'].iloc[0]
                     self.climbers_cfd=pd.read_csv(path).loc[0, "critical force"]
 
     def get_climbers_weight(self):
@@ -327,6 +366,7 @@ class Cfd():
 
         fig.add_trace(px.line(x=self.cfd_df["time"], y=self.y_pred).data[0])
         fig.add_trace(go.Scatter(x=[0, 7], y=[self.max_strength,self.max_strength], mode='lines', line=dict(color='red'),name="Fuerza Maxima"))
+        
         fig.update_layout(title=f'Desarrollo de fuerza critica. A la izquierda la fuerza maxima y a la derecha la fuerza petado <br> Fuerza Maxima = {int(self.max_strength*100)}% Fuerza Crítica = {int(self.climbers_cfd*100/self.climbers_weight)}%',
                            xaxis_title='Tiempo (segundos)', yaxis_title='Fuerza (% de masa corporal)',legend=dict(orientation="h",yanchor="bottom",y=1.02,xanchor="right",x=1, font=dict(size=16)))
         return fig

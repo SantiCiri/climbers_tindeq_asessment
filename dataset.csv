@@ -1,0 +1,27 @@
+,id_evaluacion,Marca temporal,Dirección de correo electrónico,DNI,Nombre,Apellido,Fecha de Nacimiento,Altura en cm,Estilo preferido,Grado IRCRA a vista,Grado IRCRA ensayado,Sexo,Años Escalando,Mano hábil,Dominada maxima (% peso corporal),rot-ext-der,flex-dedo-der,rot-int-der,rot-int-izq,rot-ext-izq,flex-dedo-izq,rfd (% peso/s),peso (kg),cfd (% peso),Confianza para dataset,Unnamed: 15,Grado IRCRA a vista x3,Grado IRCRA ensayado x3,Peso (kg sin decimales)
+0,1,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.303,229.392,137.526,94.044,119.146,197.013,180.568,105.33175355450236,8.44,90.8774090886681,,,,,
+0,2,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.303,229.392,137.526,94.044,119.146,197.013,180.568,105.33175355450236,8.44,90.8774090886681,,,,,
+0,3,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.3,229.0,138.0,94.0,119.0,197.0,181.0,105.33175355450236,8.44,90.8774090886681,,,,,
+0,4,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.3,229.0,138.0,94.0,119.0,197.0,181.0,105.0,8.44,90.9,,,,,
+0,5,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.3,229.0,138.0,94.0,119.0,197.0,181.0,105.0,8.44,90.9,,,,,
+0,6,28/09/2023 18:51:08,cirigliano.santiago@gmail.com,36946123,Santiago,Cirigliano,11/11/1992,173,Deportiva,7a,7b,Masculino,8.0,Derecha,76.3,229.0,138.0,94.0,119.0,197.0,181.0,105.0,8.44,90.9,,,,,
+0,7,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,63.2,,,,,326.0,50.62,65.2,,,,,
+0,8,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,63.2,,,,,326.0,50.62,65.2,,,,,
+0,9,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,63.2,,,,,326.0,50.62,65.2,,,,,
+0,10,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,126.0,,,,,326.0,50.62,65.2,,,,,
+0,11,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,126.0,,,,,326.0,50.62,65.2,,,,,
+0,12,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,126.0,,,,,326.0,50.62,65.2,,,,,
+0,13,1/11/2023 21:02:53,cirigliano.santiago@gmail.com,37504394,Agustina,Repetto,25/10/1993,160,Deportiva,6b+,7a+,Femenino,3.0,Derecha,110.0,,126.0,,,,,326.0,50.62,65.2,,,,,
+0,14,8/11/2023 12:46:32,cirigliano.santiago@gmail.com,41089526,Facundo,Jios,28/10/1998,185,Deportiva,6c,7b,Masculino,8.0,Derecha,100.0,,60.8,,,,,93.7,89.49,25.7,,,,,
+0,15,8/11/2023 12:46:32,cirigliano.santiago@gmail.com,41089526,Facundo,Jios,28/10/1998,185,Deportiva,6c,7b,Masculino,8.0,Derecha,100.0,,60.8,,,,,188.0,89.49,25.7,,,,,
+0,16,8/11/2023 12:46:32,cirigliano.santiago@gmail.com,41089526,Facundo,Jios,28/10/1998,185,Deportiva,6c,7b,Masculino,8.0,Derecha,100.0,,60.8,,,,,188.0,89.49,25.7,,,,,
+0,17,23/03/2024 8:56:38,nikosink99@gmail.com,42068702,Nicolas,Castro,12/06/1999,179,Deportiva,7a,7b,Masculino,8.0,Derecha,100.0,,81.0,,,,,314.0,83.69,13.1,si,,6c,7a,
+0,18,23/03/2024 8:56:38,nikosink99@gmail.com,42068702,Nicolas,Castro,12/06/1999,179,Deportiva,7a,7b,Masculino,8.0,Derecha,100.0,,81.0,,,,,314.0,83.69,13.1,si,,6c,7a,
+0,19,23/03/2024 8:56:38,nikosink99@gmail.com,42068702,Nicolas,Castro,12/06/1999,179,Deportiva,7a,7b,Masculino,8.0,Derecha,100.0,,81.0,,,,,314.0,83.69,13.1,si,,6c,7a,
+0,20,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,101.0,,119.0,,,,,2.7,74.0,35.4,si,,6c,7a,74.0
+0,21,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,101.0,,119.0,,,,119.0,2.7,74.0,35.4,si,,6c,7a,74.0
+0,22,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,1.54,,,,,,119.0,2.7,74.0,35.4,si,,6c,7a,74.0
+0,23,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,154.0,,,,,,119.0,2.7,74.0,35.4,si,,6c,7a,74.0
+0,24,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,154.0,,,,,,119.0,2.7,74.0,35.4,si,,6c,7a,74.0
+0,25,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,154.0,,,,,,119.0,40.5,74.0,35.4,si,,6c,7a,74.0
+0,26,13/01/2025 21:00:28,lucas.menger@gmail.com,30282627,Lucas,Menger,30/12/1982,167,Deportiva,7a,7c,Masculino,20.0,Izquierda,154.0,,,,,,119.0,40.5,74.0,35.4,si,,6c,7a,74.0
