@@ -8,7 +8,7 @@ from model_plots.plot import Global_plots
 if __name__ == '__main__':
     rfd_fig=None
     #Lee la información del excel input
-    dni, fecha1, fecha2, intro, methodology, objective, conclusion=DriveDownloader.variable_reader()
+    dni, fecha, intro, methodology, objective, conclusion=DriveDownloader.variable_reader()
     #descarga los archivos de ese DNI en una carpeta con ese DNI
     DriveDownloader.download_files(dni=dni)
     #descomprime todos los archivos de la carpeta de ese DNI
@@ -16,14 +16,14 @@ if __name__ == '__main__':
     unzip.unzip_repeaters()
     unzip.move_csvs()
 
-    weight=Balance(fecha1=fecha1,fecha2=fecha2,dni=dni)
+    weight=Balance(fecha=fecha,dni=dni)
 
-    climbers_weight=weight.get_climbers_weight(start_date=fecha1,end_date=fecha2)
+    climbers_weight=weight.get_climbers_weight(fecha=fecha)
 
-    rfd=Rfd(fecha1=fecha1,fecha2=fecha2,dni=dni)
+    rfd=Rfd(fecha=fecha,dni=dni)
     climbers_rfd=rfd.get_climbers_rfd()*100/climbers_weight
     rfd_fig=rfd.plot_rfd()
-    cfd=Cfd(dni=dni,fecha1=fecha1,fecha2=fecha2,climbers_weight=climbers_weight)
+    cfd=Cfd(dni=dni,fecha=fecha,climbers_weight=climbers_weight)
     climbers_cfd=cfd.climbers_cfd*100/climbers_weight
     cfd.calc_perc_body_mass()
     cfd.remove_rests()
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     cfd.fit_model()
     cfd.predict_cfd()
     cfd_plot=cfd.plot()
-    repeaters=Calc_from_repeaters(dni=dni,fecha1=fecha1, fecha2=fecha2,rfd_fig=rfd_fig)
+    repeaters=Calc_from_repeaters(dni=dni,fecha=fecha,rfd_fig=rfd_fig)
     repeaters_plot=repeaters.plot_exercises()
     exercise_mvc_dicc=repeaters.indicator_extractor()
     dataset=Dataset_Builder(dni=dni,climbers_rfd=climbers_rfd,climbers_weight=climbers_weight,climbers_cfd=climbers_cfd,
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     mvc_global_plot=population_plots.mvc_global_plotter(sexo=reporter.values["Sexo"])
     cfd_global_plot=population_plots.cfd_global_plotter()
 
-    reporter.create_html(fecha2=fecha2,
+    reporter.create_html(fecha=fecha,
                          secciones = ["Introducción", "Objetivo", "Metodología", "Resultados", "Conclusiones"],
                          introduccion=intro,
                          objetivo = objective,

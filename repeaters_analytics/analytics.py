@@ -13,25 +13,25 @@ import logging
 logging.basicConfig(level=logging.INFO,filename="logs.log",filemode="a")
 
 class Balance():
-    def __init__(self,fecha1,fecha2,dni):
+    def __init__(self,fecha,dni):
         path = os.getcwd()
-        self.dni=dni.replace("'", "")
-        start_date = datetime.strptime(fecha1, "%d_%m_%Y").date()
-        end_date = datetime.strptime(fecha2, "%d_%m_%Y").date()
-        # Construct a regular expression pattern to match the date range between fecha1 and fecha2
-        self.date_range_pattern = r"\b(" + "|".join([(start_date + timedelta(days=i)).strftime("%d_%m_%Y") for i in range((end_date - start_date).days + 1)]) + r")\b"
-        # Construct a regular expression pattern to match dates in the format "day_month_year"
-        self.date_pattern = r"\b(\d{2}_\d{2}_\d{4})\b"
+        self.dni = dni.replace("'", "")
+        search_date = datetime.strptime(fecha, "%d_%m_%Y").date()
+        # Construct a regular expression pattern to match the specific search date
+        self.date_pattern = search_date.strftime(r"\b%d_%m_%Y\b")
         # Search for CSV files matching the given dni in the specified path
-        for path in glob.glob(os.path.join(path,dni[1:-1], "*","balanza","*.csv")):
-            match=re.search(self.date_pattern, path)
+        dni=re.sub(r'\D', '', dni)
+        for path in glob.glob(os.path.join(path, dni, "*", "balanza", "*.csv")):
+            match = re.search(r"\b(\d{2}_\d{2}_\d{4})\b", path)
             if match:
                 date = match.group(1)
-                if re.search(self.date_range_pattern, date):
+                if re.search(self.date_pattern, date):
+                    print(f"en re.search {path}")
                     # Read the CSV file into a pandas DataFrame, skipping the first 3 rows and using the fourth row as the header
-                    self.balance_df = pd.read_csv(path,skiprows=3,header=0)
+                    self.balance_df = pd.read_csv(path, skiprows=3, header=0)
+                    print(path)
 
-    def get_climbers_weight(self,start_date,end_date):
+    def get_climbers_weight(self,fecha):
         """
         Retrieves the average weight of climbers from the balance data.
         Returns:
@@ -39,55 +39,48 @@ class Balance():
         Extracts a subset of the balance DataFrame, calculates the mean weight, and returns it as the average weight of climber"""
         
         df=pd.read_csv("evaluacion_escalada.csv")
-        start_date = pd.to_datetime(start_date, format='%d_%m_%Y')
-        end_date = pd.to_datetime(end_date, format='%d_%m_%Y')
+        fecha = pd.to_datetime(fecha, format='%d_%m_%Y')
         # Convierte la columna 'Marca temporal' a datetime
         df['Marca temporal'] = pd.to_datetime(df['Marca temporal'], format='%d/%m/%Y %H:%M:%S', errors='coerce')
-
+        # Normalizar la columna 'Marca temporal' para eliminar la hora
+        df['Marca temporal'] = df['Marca temporal'].dt.normalize()
         df['DNI'] = df['DNI'].astype(str)
         # Filtra el DataFrame
-        df = df[(df['Marca temporal'] >= start_date) & 
-                (df['Marca temporal'] <= end_date)]
+        df = df[(df['Marca temporal'] == fecha)]
 
         df=df[df['DNI'].isin([self.dni])]
         df = df.reset_index(drop=True)
-        try:
-            self.climbers_weight=df.loc[0, 'Peso (kg sin decimales)']  # This retrieves the value of the first row.
-            self.climbers_weight = round(self.climbers_weight,2)
-            logging.info("Balanza tomada por formulario")
-        except:
+        
+        self.climbers_weight=df.loc[0, 'Peso (kg sin decimales)']  # This retrieves the value of the first row.
+        self.climbers_weight = round(self.climbers_weight,2)
+        if pd.isna(self.climbers_weight):
             logging.info("No se encontró ingreso manual de balanza. Buscando calcular por tindeq")
             df2 = self.balance_df.iloc[:int(len(self.balance_df)*0.8)].iloc[int(len(self.balance_df)*0.2):]
             self.climbers_weight = round(df2["weight"].mean(),2)
             logging.info("Peso de escalador calculado por tindeq")
+        else:
+            logging.info("Balanza tomada por formulario")
         return self.climbers_weight
 
 class Rfd():
-    def __init__(self,dni,fecha1,fecha2):
+    def __init__(self,dni,fecha):
         path = os.getcwd()
-        self.dni=dni.replace("'", "")
-        start_date = datetime.strptime(fecha1, "%d_%m_%Y").date()
-        end_date = datetime.strptime(fecha2, "%d_%m_%Y").date()
-        # Construct a regular expression pattern to match the date range between fecha1 and fecha2
-        self.date_range_pattern = r"\b(" + "|".join([(start_date + timedelta(days=i)).strftime("%d_%m_%Y") for i in range((end_date - start_date).days + 1)]) + r")\b"
-        # Construct a regular expression pattern to match dates in the format "day_month_year"
-        self.date_pattern = r"\b(\d{2}_\d{2}_\d{4})\b"
+        self.dni = dni.replace("'", "")
+        self.date_pattern = re.compile(r"\b(" + re.escape(fecha) + r")\b")
+        self.rfd_dfs = []
         # Search for CSV files matching the given dni in the specified path
-        for path in glob.glob(os.path.join(path,dni[1:-1], "*","rfd","*.csv")):
+        dni=re.sub(r'\D', '', dni)
+        for path in glob.glob(os.path.join(path,dni, "*","rfd","*.csv")):
             match=re.search(self.date_pattern, path)
             if match:
                 date = match.group(1)
-                if re.search(self.date_range_pattern, date):
+                if re.search(self.date_pattern, date):
                     # Read the CSV file into a pandas DataFrame, skipping the first 2 rows and using the third row as the header
-                    self.rfd_df = pd.read_csv(path,skiprows=2,header=0)
-    def get_climbers_rfd(self):
-        """Retrieves the Rfd value of climbers. rfd calculated as the force in kg/s made the first 200ms after making 0,4kg of force.
-        Returns:
-        - climbers_rfd (float): The Rfd value of climbers."""
+                    df = pd.read_csv(path,skiprows=2,header=0)
+                    self.rfd_dfs.append(df)
 
-        # Encuentra los índices donde weight cruza 4
-        ### ESTO HAY QUE CAMBIARLO POR 0.4
-        crossings = self.rfd_df[(self.rfd_df['weight'] >= 4) & (self.rfd_df['weight'].shift(1) < 4)].index
+    def process_rfd(self,df):
+        crossings = df[(df['weight'] >= 0.4) & (df['weight'].shift(1) < 4)].index
 
         # Captura el índice justo antes del último cruce
         if len(crossings) > 0:
@@ -97,8 +90,8 @@ class Rfd():
             start_index = None
 
         # Filter the DataFrame for the first 0.2 seconds after at least 0.4 kg weight is recorded
-        end_time = self.rfd_df.loc[start_index, 'time'] + 0.2
-        df = self.rfd_df[(self.rfd_df['time'] >= self.rfd_df.loc[start_index, 'time']) & (self.rfd_df['time'] <= end_time)]
+        end_time = df.loc[start_index, 'time'] + 0.2
+        df = df[(df['time'] >= df.loc[start_index, 'time']) & (df['time'] <= end_time)]
 
         # Capture min and max weight and corresponding times
         self.min_weight = df['weight'].min()
@@ -110,7 +103,25 @@ class Rfd():
         weight_difference = self.max_weight - self.min_weight
         time_difference = self.max_time - self.min_time
 
-        self.climbers_rfd=round(weight_difference/time_difference)
+        climbers_rfd=round(weight_difference/time_difference)
+        return climbers_rfd
+
+    def get_climbers_rfd(self):
+        """Retrieves the Rfd value of climbers. rfd calculated as the force in kg/s made the first 200ms after making 0,4kg of force.
+        Returns:
+        - climbers_rfd (float): The Rfd value of climbers."""
+        max_rfd = float('-inf') 
+        best_df = None
+        for df in self.rfd_dfs:
+            temp_climbers_rfd=self.process_rfd(df)
+            
+            if temp_climbers_rfd > max_rfd: 
+                max_rfd = temp_climbers_rfd
+                best_df = df
+
+        self.climbers_rfd=max_rfd
+        self.rfd_df=best_df
+        a=self.process_rfd(best_df)
         logging.info("RFD calculado")
         return self.climbers_rfd
     
@@ -125,17 +136,18 @@ class Rfd():
         return rfd_fig
 
 class Calc_from_repeaters():
-    def __init__(self,dni,fecha1,fecha2,rfd_fig=None):
+    def __init__(self,dni,fecha,rfd_fig=None):
         #get the working path
         self.path = "/".join(os.getcwd().split("/")[:-1])
         self.dni=dni.replace("'", "")
-        self.start_date = datetime.strptime(fecha1, "%d_%m_%Y").date()
-        self.end_date = datetime.strptime(fecha2, "%d_%m_%Y").date()
+        self.fecha=fecha
+        self.search_date = datetime.strptime(fecha, "%d_%m_%Y").date()
         self.rfd_fig=rfd_fig
     
-    def _csv_wrapper(self,dni,start_date,end_date):
-        date_range_pattern = r"\b(" + "|".join([(start_date + timedelta(days=i)).strftime("%d_%m_%Y") for i in range((end_date - start_date).days + 1)]) + r")\b"
+    def _csv_wrapper(self,dni,search_date):
+        # Patrones de expresión regular para buscar la fecha específica
         date_pattern = r"\b(\d{2}_\d{2}_\d{4})\b"
+        search_date_pattern = re.compile(re.escape(search_date))
         exercises_path=[]
         path = os.getcwd()
         paths=glob.glob(os.path.join(path,dni, "*","*der","*.csv"))
@@ -144,7 +156,7 @@ class Calc_from_repeaters():
             match=re.search(date_pattern, i)
             if match:
                 date = match.group(1)
-                if re.search(date_range_pattern, date):
+                if search_date_pattern.search(date):
                     exercises_path.append(i)
         #Extracts the exercises that have been tested and downloaded
         exercises=[]
@@ -191,7 +203,7 @@ class Calc_from_repeaters():
         return repeaters_path
     
     def indicator_extractor(self):
-        self.repeaters_path=self._csv_wrapper(self.dni,self.start_date,self.end_date)
+        self.repeaters_path=self._csv_wrapper(dni=self.dni,search_date=self.fecha)
         exercise_mvc_dicc={}
         #for each exercise that can be evaluated
         for df_path in self.repeaters_path:
@@ -217,7 +229,7 @@ class Calc_from_repeaters():
         return exercise_mvc_dicc
     
     def plot_exercises(self):
-        self.repeaters_path=self._csv_wrapper(self.dni,self.start_date,self.end_date)
+        self.repeaters_path=self._csv_wrapper(self.dni,self.fecha)
         if self.rfd_fig != None: plots=[self.rfd_fig]
         else: plots=[]
         #for each exercise that can be evaluated
@@ -292,18 +304,16 @@ class Calc_from_repeaters():
         return fig
 
 class Cfd():
-    def __init__(self,fecha1,fecha2,dni,climbers_weight):
+    def __init__(self,fecha,dni,climbers_weight):
         path = os.getcwd()
         self.climbers_weight=climbers_weight
-        start_date = datetime.strptime(fecha1, "%d_%m_%Y").date()
-        end_date = datetime.strptime(fecha2, "%d_%m_%Y").date()
-        self.date_range_pattern = r"\b(" + "|".join([(start_date + timedelta(days=i)).strftime("%d_%m_%Y") for i in range((end_date - start_date).days + 1)]) + r")\b"
-        self.date_pattern = r"\b(\d{2}_\d{2}_\d{4})\b"
-        for path in glob.glob(os.path.join(path,dni[1:-1], "*","cfd","data_set_1.csv")):
+        self.date_pattern = re.compile(r"\b(" + re.escape(fecha) + r")\b")
+        dni=re.sub(r'\D', '', dni)
+        for path in glob.glob(os.path.join(path,dni, "*","cfd","data_set_1.csv")):
             match=re.search(self.date_pattern, path)
             if match:
                 date = match.group(1)
-                if re.search(self.date_range_pattern, date):
+                if re.search(self.date_pattern, date):
                     # Leer el archivo para identificar la fila del encabezado
                     with open(path, 'r') as file:
                         for i, line in enumerate(file):

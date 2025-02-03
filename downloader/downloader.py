@@ -28,26 +28,19 @@ class DriveDownloader:
         df=pd.read_excel("input.xlsx")
         dni=int(df.loc[df['concepto'] == 'DNI', 'valor'].item())
         dni=f"'{dni}'"
-        fecha1=str(df.loc[df['concepto'] == 'fecha1', 'valor'].item())
-        fecha2=str(df.loc[df['concepto'] == 'fecha2', 'valor'].item())
+        fecha=str(df.loc[df['concepto'] == 'fecha', 'valor'].item())
         conclusion=str(df.loc[df['concepto'] == 'Conclusion Final', 'valor'].item()).replace("\n", "<br>")
         methodology=str(df.loc[df['concepto'] == 'Metodologia', 'valor'].item()).replace("\n", "<br>")
         objective=str(df.loc[df['concepto'] == 'Objetivo', 'valor'].item()).replace("\n", "<br>")
         intro=str(df.loc[df['concepto'] == 'Introduccion', 'valor'].item()).replace("\n", "<br>")
-        return dni, fecha1, fecha2, intro, methodology, objective, conclusion
+        return dni, fecha, intro, methodology, objective, conclusion
 
     @classmethod
-    def download_files(cls,dni):
+    def query_drive(cls,dni,service):
         try:
-            creds = cls._get_credentials()
-        except:
-            flow = InstalledAppFlow.from_client_secrets_file(
-            os.path.join(os.getcwd(), "downloader", "credentials.json"), DriveDownloader.SCOPES)
-            creds = flow.run_local_server(port=0)
-            service = build('drive', 'v3', credentials=creds)
-        try:
+            dni = dni.replace("'", "")
             # Search for all files containing a specific DNI in their name
-            query = f"name contains {dni} and trashed = false"
+            query = f"name contains '{dni}' and trashed = false"
             results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
             items = results.get('files', [])
 
@@ -62,6 +55,16 @@ class DriveDownloader:
                 cls._download_file(cls,service=service, file_id=item['id'], file_name=item['name'],dni=dni)
         except HttpError as error:
             logging.warning(f'An error occurred -- Do you have a folder named after the DNI you are searching for?? --:\n {error}')
+
+    @classmethod
+    def download_files(cls,dni):
+        try:
+            creds = cls._get_credentials()
+        except:
+            flow = InstalledAppFlow.from_client_secrets_file(
+            os.path.join(os.getcwd(), "downloader", "credentials.json"), DriveDownloader.SCOPES)
+            creds = flow.run_local_server(port=0)
+            service = build('drive', 'v3', credentials=creds)
         try:
             # Downloads the form
             file_id="1RqUM28tJhRsq44JLjIJaBLMsNHW7zV2EpFEQfQXa7ho"
@@ -70,6 +73,24 @@ class DriveDownloader:
         except HttpError as error:
             print(f'An error occurred: {error}')
             logging.error(f'An error occurred: {error}')
+        if dni!=None:
+            print(f"dni {dni}")
+            cls.query_drive(dni=dni,service=service)
+        elif dni==None:
+            # Leer el archivo CSV
+            df = pd.read_csv('evaluacion_escalada.csv')
+            # descartar duplicados
+            df=df[df['Confianza para dataset'] != 'no'].drop_duplicates(subset="DNI",keep="first")
+            # Extraer los valores de la columna "timestamp"
+            timestamp_list = df['Marca temporal'].apply(lambda x: x.split()[0]).tolist()
+            # Reemplazar '/' por '_' en cada valor de la lista
+            timestamp_list = [timestamp.replace('/', '_') for timestamp in timestamp_list]
+            dni_list = [str(item) for item in df['DNI'].tolist()]
+            for dni in dni_list:
+                cls.query_drive(dni=dni,service=service)
+                print(f"pasamos la query con DNI {dni}")
+            return dni_list,timestamp_list
+        else: print("flujo incorrecto")
 
     def _get_credentials(self):
         """Gets valid user credentials from storage."""

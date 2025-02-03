@@ -22,7 +22,7 @@ class Reporter:
         df["Marca temporal"]=pd.to_datetime(df["Marca temporal"], format="%d/%m/%Y %H:%M:%S")
         self.values= df.to_dict(orient='records')[0]
             
-    def create_html(self,fecha2, secciones, introduccion, objetivo,metodologia, graficos):
+    def create_html(self,fecha, secciones, introduccion, objetivo,metodologia, graficos):
         logging.info(f"Data in reporting: {self.values}")
         #Remove keys to build the results
         self.resultados=self.values.copy()
@@ -36,9 +36,9 @@ class Reporter:
         surname=self.values["Apellido"]
         sexo=self.values["Sexo"]
         if self.values['Estilo preferido']=="Deportiva":
-            redpoint_grade=next((k for k, v in self.ircra_depo.items() if v == self.values['Grado IRCRA ensayado']), None)
+            redpoint_grade=next((k for k, v in self.ircra_depo.items() if v == self.values['Grado IRCRA ensayado x3']), None)
         elif self.values['Estilo preferido']=="Boulder":
-            redpoint_grade=next((k for k, v in self.ircra_bulder.items() if v == self.values['Grado IRCRA ensayado']), None)
+            redpoint_grade=next((k for k, v in self.ircra_bulder.items() if v == self.values['Grado IRCRA ensayado x3']), None)
 
         climbers_cfd=self.values['cfd (% peso)']
         if self.values['Mano hábil']=="Derecha":
@@ -46,7 +46,7 @@ class Reporter:
         elif self.values['Mano hábil']=="Izquierda":
             climbers_mvc=self.values[f'flex-dedo-izq']
 
-        title = f"Informe {name} {surname} al {fecha2.replace('_','/')}"
+        title = f"Informe {name} {surname} al {fecha.replace('_','/')}"
 
         for plot in graficos:
             if plot.layout.title.text == 'Fuerza crítica como % de peso corporal según grado de escalada':
@@ -95,9 +95,9 @@ class Reporter:
         """
 
         # Ruta del archivo HTML y PDF
-        if not os.path.exists(os.path.join(str(self.dni), fecha2)):os.makedirs(os.path.join(str(self.dni), fecha2))
-        archivo_html = os.path.join(str(self.dni), f"reporte web {fecha2}.html")
-        archivo_pdf = os.path.join(str(self.dni), f"reporte movil {fecha2}.pdf")
+        if not os.path.exists(os.path.join(str(self.dni), fecha)):os.makedirs(os.path.join(str(self.dni), fecha))
+        archivo_html = os.path.join(str(self.dni), f"reporte web {fecha}.html")
+        archivo_pdf = os.path.join(str(self.dni), f"reporte movil {fecha}.pdf")
 
         # Guardar el contenido HTML en un archivo
         with open(archivo_html, "w", encoding="utf-8") as file:
